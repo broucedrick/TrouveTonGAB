@@ -61,19 +61,19 @@ public class ListGab extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        StaggeredGridLayoutManager mlayoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager mlayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mlayoutManager);
 
         bundle = getIntent().getExtras();
         int bank_id = bundle.getInt("bank_id");
 
-        String URL_GAB = "http://10.0.2.2/dev/androidapp/getGab.php?id="+bank_id;
+        String URL_GAB = "https://trouvetongab.000webhostapp.com/getGab.php?id="+bank_id;
         Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GAB,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(ListGab.this, "Connection Success...", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ListGab.this, "Connecté", Toast.LENGTH_LONG).show();
                         try {
                             JSONArray gab = new JSONArray(response);
                             //Toast.makeText(ListGab.this, gab.toString(), Toast.LENGTH_LONG).show();

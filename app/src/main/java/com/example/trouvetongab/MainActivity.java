@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,10 +33,21 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Bank> bk = new ArrayList<>();
 
+    ViewFlipper slider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        int image[] = {R.mipmap.afriland_first_fank_foreground, R.mipmap.allianz_foreground, R.mipmap.axa_foreground};
+
+        slider = (ViewFlipper) findViewById(R.id.slider); // get the reference of ViewFlipper
+
+        for(int imge : image){
+            flipperImage(imge);
+        }
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerBank);
 
@@ -46,12 +60,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mlayoutManager);
 
 
-        String URL_BANQUES = "http://10.0.2.2/dev/androidapp/getBanque.php";
+        String URL_BANQUES = "https://trouvetongab.000webhostapp.com/getBanque.php";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_BANQUES,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, "Connection Success...", Toast.LENGTH_SHORT).show();
+                        Log.e("MainActivity", response);
+                        Toast.makeText(MainActivity.this, "Connecté", Toast.LENGTH_LONG).show();
                         try {
                             JSONArray bank = new JSONArray(response);
                             //Toast.makeText(MainActivity.this, bank.toString(), Toast.LENGTH_LONG).show();
@@ -86,7 +101,17 @@ public class MainActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
 
+    }
 
+    public void flipperImage(int image){
+        ImageView img = new ImageView(this);
+        img.setBackgroundResource(image);
 
+        slider.addView(img);
+        slider.setFlipInterval(1000);
+        slider.setAutoStart(true);
+
+        slider.setInAnimation(this, android.R.anim.slide_in_left);
+        slider.setOutAnimation(this, android.R.anim.slide_out_right);
     }
 }

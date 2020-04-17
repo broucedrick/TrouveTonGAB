@@ -6,8 +6,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Bundle;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private ArrayList<String> myDataset = new ArrayList<>();
-
+    private List<Bank> bk = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,23 +42,50 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        StaggeredGridLayoutManager mlayoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager mlayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mlayoutManager);
 
-        myDataset.add("Banque 1");
-        myDataset.add("Banque 2");
-        myDataset.add("Banque 3");
-        myDataset.add("Banque 4");
-        myDataset.add("Banque 5");
-        myDataset.add("Banque 6");
-        myDataset.add("Banque 7");
-        myDataset.add("Banque 8");
-        myDataset.add("Banque 9");
-        myDataset.add("Banque 10");
+
+        String URL_BANQUES = "http://10.0.2.2/dev/androidapp/getBanque.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_BANQUES,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(MainActivity.this, "Connection Success...", Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONArray bank = new JSONArray(response);
+                            //Toast.makeText(MainActivity.this, bank.toString(), Toast.LENGTH_LONG).show();
+                            for(int i=0; i<bank.length(); i++){
+                                JSONObject b = bank.getJSONObject(i);
+
+                                int id = b.getInt("id");
+                                String title = b.getString("title");
+                                String image = b.getString("image");
+
+                                bk.add(new Bank(id, title, image));
+
+                                mAdapter = new ListAdapter(MainActivity.this, bk);
+                                recyclerView.setAdapter(mAdapter);
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
 
         // specify an adapter (see also next example)
-        mAdapter = new ListAdapter(this, myDataset);
-        recyclerView.setAdapter(mAdapter);
+
 
 
     }

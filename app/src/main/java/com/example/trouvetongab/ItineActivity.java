@@ -9,6 +9,17 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -23,13 +34,39 @@ public class ItineActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         String url = bundle.getString("url");
-        Toast.makeText(ItineActivity.this, url, Toast.LENGTH_LONG).show();
+        //Toast.makeText(ItineActivity.this, url, Toast.LENGTH_LONG).show();
 
-        String html = "<style>img{display: inline;height: auto;max-width: 100%;}</style>"+"<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\""+url+"\" ></iframe>";
-
+        /*String html = "<style>img{display: inline;height: auto;max-width: 100%;}</style>"+"<iframe width=\"450\" height=\"260\" style=\"border: 1px solid #cccccc;\" src=\""+url+"\" ></iframe>";
+*/
         WebView web = (WebView) findViewById(R.id.webview);
         web.getSettings().setJavaScriptEnabled(true);
-        web.loadData(html, "text/html", null);
+        web.loadDataWithBaseURL(null, "<html>\n" +
+                "    <head>\n" +
+                "\n" +
+                "    </head>\n" +
+                "    <body style=\"padding: 0\">\n" +
+                "        <iframe src=\""+url+"\" width=\"100%\" height=\"100%\"/>\n" +
+                "    </body>\n" +
+                "</html>", "text/html", null, "UTF-8");
+
+        /*String url = "file:///android_asset/website.html";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(ItineActivity.this, response, Toast.LENGTH_LONG).show();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);*/
+    }
 
         /*if(url.contains("iframe")){
             Matcher matcher = Pattern.compile("src=\"([^\"]+)\"").matcher(url);
@@ -58,5 +95,5 @@ public class ItineActivity extends AppCompatActivity {
         } else
             tv.setText(Html.fromHtml(content));
         }*/
-    }
+
 }

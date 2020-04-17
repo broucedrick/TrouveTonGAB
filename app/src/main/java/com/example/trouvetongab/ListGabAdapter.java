@@ -80,31 +80,11 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
         holder.btniti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String URL_REGISTER = dataset.get(position).getLocation();
-                //Toast.makeText(ctxt, dataset.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_REGISTER,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //Toast.makeText(ctxt, "Connection Success..."+response, Toast.LENGTH_SHORT).show();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(ctxt, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
-                RequestQueue requestQueue = Volley.newRequestQueue(ctxt);
-                requestQueue.add(stringRequest);
                 Intent i = new Intent(ctxt, ItineActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("url",dataset.get(position).getLocation());
                 i.putExtras(bundle);
                 ctxt.startActivity(i, bundle);
-
             }
 
         });

@@ -8,6 +8,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -110,7 +111,8 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.apropos:
-                Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, Apropos.class));
                 break;
             case R.id.dnx:
                 Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();

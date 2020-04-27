@@ -54,12 +54,21 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
     NavigationView drawerNavView;
     ActionBarDrawerToggle toggle;
 
+    LoadingDialog loadingDialog;
+
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_gab);
+
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.startLoadingDialog();
+
+        Bundle bundle = getIntent().getExtras();
+        String bank_name = bundle.getString("bank_name");
+        setTitle(bank_name);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
@@ -74,10 +83,6 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         drawerNavView.setNavigationItemSelectedListener(this);
-
-        Bundle bundle = getIntent().getExtras();
-        String bank_name = bundle.getString("bank_name");
-        setTitle(bank_name);
 
         searchBar = (EditText) findViewById(R.id.custom_search);
         searchBar.addTextChangedListener(new TextWatcher() {
@@ -118,6 +123,9 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
                     public void onResponse(String response) {
                         //Toast.makeText(ListGab.this, "Connecté", Toast.LENGTH_LONG).show();
                         try {
+                            if(response.length() > 0){
+                                loadingDialog.dismissDialog();
+                            }
                             JSONArray gab = new JSONArray(response);
                             //Toast.makeText(ListGab.this, gab.toString(), Toast.LENGTH_LONG).show();
                             for (int i = 0; i < gab.length(); i++) {
@@ -173,7 +181,8 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.apropos:
-                Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, Apropos.class));
                 break;
             case R.id.dnx:
                 Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();

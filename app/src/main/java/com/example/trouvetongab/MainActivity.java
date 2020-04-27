@@ -73,11 +73,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String request_url = "https://trouvetongab.000webhostapp.com/getImage.php";
 
+    LoadingDialog loadingDialog;
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.startLoadingDialog();
 
         drawerLayout = findViewById(R.id.drawer);
         toolbar = (Toolbar) findViewById(R.id.toolbar1);
@@ -150,10 +155,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         Log.e("MainActivity", response);
-                        Toast.makeText(MainActivity.this, "Connecté | "+response, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this, "Connecté | "+response, Toast.LENGTH_LONG).show();
                         try {
                             JSONArray bank = new JSONArray(response);
-                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                             for(int i=0; i<bank.length(); i++){
                                 JSONObject b = bank.getJSONObject(i);
 
@@ -169,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                         } catch (JSONException e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
                     }
@@ -177,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Erreur de connexion... "+error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -213,6 +218,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, request_url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                if(response.length() > 0){
+                    loadingDialog.dismissDialog();
+                }
                 for(int i=0; i<response.length(); i++){
                     SliderUtils sliderUtils = new SliderUtils();
                     try {

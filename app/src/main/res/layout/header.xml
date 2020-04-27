@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/ubuntu_light"
-        android:text="email"
+        android:text="Digitale Finances"
         android:textColor="#fff"
         android:textSize="20dp"
         android:textStyle="bold"

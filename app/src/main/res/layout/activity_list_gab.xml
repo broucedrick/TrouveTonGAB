@@ -36,7 +36,7 @@
             android:drawablePadding="8dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:paddingHorizontal="30dp"
+            android:paddingHorizontal="15dp"
             android:paddingVertical="10dp"
             android:hint="Rechercher GAB par commune ou ville..."
             android:textColorHint="#222222"

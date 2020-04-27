@@ -1,16 +1,28 @@
 package com.example.trouvetongab;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -23,6 +35,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.navigation.NavigationView;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -36,7 +49,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -53,12 +66,30 @@ public class MainActivity extends AppCompatActivity {
     List<SliderUtils> sliderImg;
     ViewPagerAdapter viewPagerAdapter;
 
+    Toolbar toolbar;
+    DrawerLayout drawerLayout;
+    NavigationView drawerNavView;
+    ActionBarDrawerToggle toggle;
+
     String request_url = "https://trouvetongab.000webhostapp.com/getImage.php";
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        drawerLayout = findViewById(R.id.drawer);
+        toolbar = (Toolbar) findViewById(R.id.toolbar1);
+        drawerNavView = findViewById(R.id.drawerNavView);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        toggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        drawerNavView.setNavigationItemSelectedListener(this);
 
         rq = Volley.newRequestQueue(this);
 
@@ -119,10 +150,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("MainActivity", response);
-                        Toast.makeText(MainActivity.this, "Connecté", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Connecté | "+response, Toast.LENGTH_LONG).show();
                         try {
                             JSONArray bank = new JSONArray(response);
-                            //Toast.makeText(MainActivity.this, bank.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                             for(int i=0; i<bank.length(); i++){
                                 JSONObject b = bank.getJSONObject(i);
 
@@ -138,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         } catch (JSONException e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
                     }
@@ -221,6 +253,47 @@ public class MainActivity extends AppCompatActivity {
         });
 
         rq.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.apropos:
+                //Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, Apropos.class));
+                break;
+            case R.id.dnx:
+                Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return false;
+    }
+
+    public void checkConnection(){
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+
+        if(null != activeNetwork){
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
+                Toast.makeText(this, "WIFI ENABLE", Toast.LENGTH_SHORT).show();
+            }
+            else if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE){
+                Toast.makeText(this, "DATA NETWORK ENABLE", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else{
+            Toast.makeText(this, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

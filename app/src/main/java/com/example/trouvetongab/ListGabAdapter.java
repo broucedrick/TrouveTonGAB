@@ -83,6 +83,7 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
                 Intent i = new Intent(ctxt, ItineActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("url",dataset.get(position).getLocation());
+                bundle.putString("gabName", dataset.get(position).getTitle());
                 i.putExtras(bundle);
                 ctxt.startActivity(i, bundle);
             }

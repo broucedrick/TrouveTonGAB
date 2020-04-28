@@ -9,11 +9,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -52,6 +59,29 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        View headerView = drawerNavView.getHeaderView(0);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            //String personName = acct.getDisplayName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+            Toast.makeText(this, personPhoto.toString(), Toast.LENGTH_LONG).show();
+
+            ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
+            TextView avatar_name = (TextView) headerView.findViewById(R.id.avatar_name);
+
+
+            avatar_name.setText(personEmail);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.ic_launcher_background);
+            requestOptions.error(R.drawable.ic_launcher_background);
+
+            Glide.with(this).load(personPhoto)
+                    .apply(requestOptions.circleCrop()).thumbnail(0.5f).into(avatar);
+        }
 
         toggle = new ActionBarDrawerToggle(ItineActivity.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);

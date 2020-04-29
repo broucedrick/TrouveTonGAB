@@ -54,12 +54,14 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
         // each data item is just a string in this case
         Button btniti;
         TextView gabname;
+        ImageView ic;
         CardView gabLayout;
         public ViewHolder(View v) {
             super(v);
             btniti = v.findViewById(R.id.btniti);
             gabname = v.findViewById(R.id.gabName);
             gabLayout = v.findViewById(R.id.gabLayout);
+            ic = v.findViewById(R.id.gabimage);
         }
     }
 
@@ -76,6 +78,11 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
     public void onBindViewHolder(@NonNull ListGabAdapter.ViewHolder holder, final int position) {
         Gab gb = dataset.get(position);
         holder.gabname.setText(gb.getTitle());
+
+        if (gb.getPosted() == 0)
+            holder.ic.setImageResource(R.mipmap.ic_unavailable_gab);
+        else
+            holder.ic.setImageResource(R.mipmap.gab_dispo);
 
         holder.btniti.setOnClickListener(new View.OnClickListener() {
             @Override

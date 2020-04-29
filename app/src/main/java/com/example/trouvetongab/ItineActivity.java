@@ -68,7 +68,7 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
-            Toast.makeText(this, personPhoto.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, personPhoto.toString(), Toast.LENGTH_LONG).show();
 
             ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
             TextView avatar_name = (TextView) headerView.findViewById(R.id.avatar_name);

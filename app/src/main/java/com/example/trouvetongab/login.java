@@ -72,9 +72,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_WIDE);
-
         setContentView(R.layout.activity_login);
         button_connection_fb = findViewById(R.id.login_button);
         button_connection_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

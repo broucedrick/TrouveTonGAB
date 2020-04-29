@@ -95,7 +95,7 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
-            Toast.makeText(this, personPhoto.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, personPhoto.toString(), Toast.LENGTH_LONG).show();
 
             ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
             TextView avatar_name = (TextView) headerView.findViewById(R.id.avatar_name);
@@ -164,8 +164,9 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
 
                                 String title = b.getString("title");
                                 String location = b.getString("location");
+                                int posted = b.getInt("posted");
 
-                                gb.add(new Gab(title, location));
+                                gb.add(new Gab(title, location, posted));
 
                             }
                             mAdapter = new ListGabAdapter(ListGab.this, gb);

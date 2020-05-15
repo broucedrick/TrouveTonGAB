@@ -12,19 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -35,6 +41,21 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -70,128 +91,225 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     NavigationView drawerNavView;
     ActionBarDrawerToggle toggle;
+    GoogleMap mMap;
 
-    String request_url = "https://trouvetongab.000webhostapp.com/getImage.php";
+    String request_url = "https://digitalfinances.innovstech.com/getImage.php";
 
     LoadingDialog loadingDialog;
+
+
+    public String nom;
+    public String email;
+
+    private GoogleApiClient googleApiClient;
+    private GoogleSignInOptions gso;
+    GoogleSignInClient mGoogleSignInClient;
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        loadingDialog = new LoadingDialog(this);
-        loadingDialog.startLoadingDialog();
-
-        drawerLayout = findViewById(R.id.drawer);
-        toolbar = (Toolbar) findViewById(R.id.toolbar1);
-        drawerNavView = findViewById(R.id.drawerNavView);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        toggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        drawerNavView.setNavigationItemSelectedListener(this);
-
-        rq = Volley.newRequestQueue(this);
-
-        sliderImg = new ArrayList<>();
-
-        //int image[] = {R.mipmap.afriland_first_fank_foreground, R.mipmap.allianz_foreground, R.mipmap.axa_foreground};
-
-        slider = (ViewPager) findViewById(R.id.slider); // get the reference of ViewFlipper
-
-        sliderDotspanels = (LinearLayout) findViewById(R.id.slideDot);
-
-        sendRequest();
+        /*loadingDialog = new LoadingDialog(this);
+        loadingDialog.dismissDialog();*/
 
 
-        slider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        SharedPreferences mSharedPreferences = getSharedPreferences("User Data", Context.MODE_PRIVATE);
+        nom = mSharedPreferences.getString("nom","");
+        email = mSharedPreferences.getString("email", "");
+        if(nom.length() <= 0){
 
+            startActivity(new Intent(this, login.class));
+
+        }else{
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // Show rationale and request permission.
             }
 
-            @Override
-            public void onPageSelected(int position) {
-                for (int i=0; i<dotscount; i++){
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+
+            setContentView(R.layout.activity_main);
+
+            loadingDialog = new LoadingDialog(this);
+            loadingDialog.startLoadingDialog();
+
+            drawerLayout = findViewById(R.id.drawer);
+            toolbar = (Toolbar) findViewById(R.id.toolbar1);
+            drawerNavView = findViewById(R.id.drawerNavView);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+/*
+            View headerView = drawerNavView.getHeaderView(0);
+
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+            if (acct != null) {
+                String personName = acct.getDisplayName();
+                String personEmail = acct.getEmail();
+                String personId = acct.getId();
+                Uri personPhoto = acct.getPhotoUrl();
+               // Toast.makeText(this, "voici l'email : "+personEmail, Toast.LENGTH_LONG).show();
+
+                ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
+                TextView avatar_name = (TextView) headerView.findViewById(R.id.avatar_name);
+
+
+                avatar_name.setText(personName);
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.mipmap.avatar_default);
+                requestOptions.error(R.mipmap.avatar_default);
+
+                Glide.with(this).load(personPhoto)
+                        .apply(requestOptions.circleCrop()).thumbnail(0.5f).into(avatar);
+            }else{
+                Bundle bundle = getIntent().getExtras();
+                String fb_id = bundle.getString("id");
+                String fb_name = bundle.getString("name");
+                String fb = bundle.getString("fb");
+
+
+                // Toast.makeText(MainActivity.this, fb, Toast.LENGTH_LONG).show();
+
+
+                // if(fb.equals("fb") || name_ggle.equals("ggle") ){
+                ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
+                TextView avatar_name = (TextView) headerView.findViewById(R.id.avatar_name);
+
+
+                avatar_name.setText(fb_name);
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.mipmap.avatar_default);
+                requestOptions.error(R.mipmap.avatar_default);
+
+                Glide.with(this).load("https://graph.facebook.com/" + fb_id+ "/picture?type=large")
+                        .apply(requestOptions.circleCrop()).thumbnail(0.5f).into(avatar);
+            }
+
+*/
+
+
+
+
+            toggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+            drawerNavView.setNavigationItemSelectedListener(this);
+
+            rq = Volley.newRequestQueue(this);
+
+            sliderImg = new ArrayList<>();
+
+            //int image[] = {R.mipmap.afriland_first_fank_foreground, R.mipmap.allianz_foreground, R.mipmap.axa_foreground};
+
+            slider = (ViewPager) findViewById(R.id.slider); // get the reference of ViewFlipper
+
+            sliderDotspanels = (LinearLayout) findViewById(R.id.slideDot);
+
+            sendRequest();
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+
+
+            slider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
                 }
 
-                dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-            }
+                @Override
+                public void onPageSelected(int position) {
+                    for (int i=0; i<dotscount; i++){
+                        dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+                    }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+                  dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+                }
 
-            }
-        });
+                @Override
+                public void onPageScrollStateChanged(int state) {
 
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new MyTimerTask(), 500, 4000);
+                }
+            });
+
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new MyTimerTask(), 500, 4000);
 
         /*for(int imge : image){
             flipperImage(imge);
         }*/
 
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerBank);
+            recyclerView = (RecyclerView) findViewById(R.id.recyclerBank);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
+            // use this setting to improve performance if you know that changes
+            // in content do not change the layout size of the RecyclerView
+            recyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
-        StaggeredGridLayoutManager mlayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(mlayoutManager);
+            // use a linear layout manager
+            StaggeredGridLayoutManager mlayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(mlayoutManager);
 
 
-        String URL_BANQUES = "https://trouvetongab.000webhostapp.com/getBanque.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_BANQUES,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("MainActivity", response);
-                        //Toast.makeText(MainActivity.this, "Connecté | "+response, Toast.LENGTH_LONG).show();
-                        try {
-                            JSONArray bank = new JSONArray(response);
-                            //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
-                            for(int i=0; i<bank.length(); i++){
-                                JSONObject b = bank.getJSONObject(i);
+            String URL_BANQUES = "https://digitalfinances.innovstech.com/getBanque.php";
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_BANQUES,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("MainActivity", response);
+                            //Toast.makeText(MainActivity.this, "Connecté | "+response, Toast.LENGTH_LONG).show();
+                            try {
+                                if(response.length() > 0){
+                                    loadingDialog.dismissDialog();
+                                }
+                                JSONArray bank = new JSONArray(response);
+                                //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                                for(int i=0; i<bank.length(); i++){
+                                    JSONObject b = bank.getJSONObject(i);
 
-                                int id = b.getInt("id");
-                                String title = b.getString("title");
-                                String image = b.getString("image");
+                                    int id = b.getInt("id");
+                                    String title = b.getString("title");
+                                    String image = b.getString("image");
 
-                                bk.add(new Bank(id, title, image));
+                                    bk.add(new Bank(id, title, image));
 
-                                mAdapter = new ListAdapter(MainActivity.this, bk);
-                                recyclerView.setAdapter(mAdapter);
+                                    mAdapter = new ListAdapter(MainActivity.this, bk);
+                                    recyclerView.setAdapter(mAdapter);
+                                }
+
+
+                            } catch (JSONException e) {
+                                //Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
                             }
-
-
-                        } catch (JSONException e) {
-                            //Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Erreur de connexion... "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //Toast.makeText(MainActivity.this, "Erreur de connexion... "+error.getMessage(), Toast.LENGTH_SHORT).show();
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+                            loadingDialog.dismissDialog();
+
+                            loadingDialog.startWarningDialog();
+                        }
+                    });
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(stringRequest);
 
 
 
-        // specify an adapter (see also next example)
+            // specify an adapter (see also next example)
+
+
+
+        }
+
 
     }
 
@@ -215,48 +333,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void sendRequest(){
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, request_url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                if(response.length() > 0){
-                    loadingDialog.dismissDialog();
-                }
-                for(int i=0; i<response.length(); i++){
-                    SliderUtils sliderUtils = new SliderUtils();
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
-                        sliderUtils.setSliderImageUrl(jsonObject.getString("image"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, request_url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for(int i=0; i<response.length(); i++){
+                            SliderUtils sliderUtils = new SliderUtils();
+                            try {
+                                if(response.length() > 0){
+                                    loadingDialog.dismissDialog();
+                                }
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                sliderUtils.setSliderImageUrl(jsonObject.getString("image"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            sliderImg.add(sliderUtils);
+
+
+                        }
+
+                        viewPagerAdapter = new ViewPagerAdapter(sliderImg,MainActivity.this);
+                        slider.setAdapter(viewPagerAdapter);
+
+                        dotscount = viewPagerAdapter.getCount();
+                        dots = new ImageView[dotscount];
+
+                        for (int i=0; i<dotscount; i++){
+                            dots[i] = new ImageView(MainActivity.this);
+                            dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                            params.setMargins(8, 0, 8, 0);
+                            sliderDotspanels.addView(dots[i], params);
+                        }
+
+                        dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+
                     }
-
-                    sliderImg.add(sliderUtils);
-
-
-                }
-
-                viewPagerAdapter = new ViewPagerAdapter(sliderImg,MainActivity.this);
-                slider.setAdapter(viewPagerAdapter);
-
-                dotscount = viewPagerAdapter.getCount();
-                dots = new ImageView[dotscount];
-
-                for (int i=0; i<dotscount; i++){
-                    dots[i] = new ImageView(MainActivity.this);
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
-
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(8, 0, 8, 0);
-                    sliderDotspanels.addView(dots[i], params);
-                }
-
-                dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-
-            }
-        }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                loadingDialog.dismissDialog();
+
+                loadingDialog.startWarningDialog();
             }
         });
 
@@ -267,8 +389,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
-        else
+        else{
+         //  startActivity(new Intent(this, MainActivity.class));
             super.onBackPressed();
+            this.finishAffinity();
+           // this.finish();
+            //startActivity(new Intent(this, MainActivity.class));
+            //this.onDestroy();
+
+
+        }
+    }
+    public void logout_fb() {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            startActivity(new Intent(this, login.class));
+           // Toast.makeText(getApplicationContext(),"facebook deconnecter",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void logout_gl() {
+
+       mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+              //  Toast.makeText(MainActivity.this, "google deconnecter ... ", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), login.class));
+                finish();
+            }
+        });
+
     }
 
     @Override
@@ -280,6 +430,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.dnx:
                 Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();
+                logout_fb();
+                logout_gl();
+                clearPrefData();
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -288,9 +441,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void checkConnection(){
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
-
         if(null != activeNetwork){
             if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
                 Toast.makeText(this, "WIFI ENABLE", Toast.LENGTH_SHORT).show();
@@ -302,6 +453,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             Toast.makeText(this, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void clearPrefData(){
+        SharedPreferences mSharedPreferences = getSharedPreferences("User Data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+        mEditor.clear().apply();
     }
 
 

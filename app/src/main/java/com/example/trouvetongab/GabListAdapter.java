@@ -14,36 +14,22 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHolder> implements Filterable {
+public class GabListAdapter extends RecyclerView.Adapter<GabListAdapter.ViewHolder> implements Filterable {
     private List<Gab> dataset;
     private List<Gab> mFilteredList;
     private Context ctxt;
 
 
 
-    public ListGabAdapter(Context context, List<Gab> data){
+    public GabListAdapter(Context context, List<Gab> data){
         dataset = data;
         mFilteredList = new ArrayList<>(dataset);
         ctxt = context;
@@ -55,10 +41,8 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
         TextView gabname;
         ImageView ic;
         CardView gabLayout;
-        TextView aucun;
         public ViewHolder(View v) {
             super(v);
-            aucun = v.findViewById(R.id.aucun);
             btniti = v.findViewById(R.id.btniti);
             gabname = v.findViewById(R.id.gabName);
             gabLayout = v.findViewById(R.id.gabLayout);
@@ -69,14 +53,14 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
 
     @NonNull
     @Override
-    public ListGabAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listgabitem_layout, parent, false);
-        ListGabAdapter.ViewHolder holder = new ListGabAdapter.ViewHolder(view);
+        ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListGabAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Gab gb = dataset.get(position);
         holder.gabname.setText(gb.getTitle());
 
@@ -89,10 +73,6 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ctxt, ItineActivity.class);
-               // Intent i = new Intent(ctxt, Map.class);
-
-                Toast.makeText(ctxt, "go to itineraire", Toast.LENGTH_LONG).show();
-
                 Bundle bundle = new Bundle();
                 bundle.putString("url",dataset.get(position).getLocation());
                 bundle.putString("gabName", dataset.get(position).getTitle());
@@ -101,12 +81,6 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
             }
 
         });
-
-//        if(gabname.size() <= 0){
-//            holder.aucun.setVisibility(View.VISIBLE);
-//        }else{
-//            holder.aucun.setVisibility(View.GONE);
-//        }
     }
 
     public Bitmap StringToBitMap(String image){
@@ -146,9 +120,7 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
 
                             filteredList.add(gab);
                         }
-
                     }
-
                 }
 
 
@@ -165,5 +137,4 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
             }
         };
     }
-
 }

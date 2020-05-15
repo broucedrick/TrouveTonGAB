@@ -2,4 +2,8 @@
     <string name="app_name">Trouve Ton GAB</string>
     <string name="drawerOpen">drawerOpen</string>
     <string name="drawerClose">drawerClose</string>
+    <string name="facebook_app_id">274838633545158</string>
+    <string name="fb_login_protocol_scheme">fb274838633545158</string>
+    <string name="title_activity_agence_gab">v</string>
+    <string name="title_activity_gab_map">Map</string>
 </resources>

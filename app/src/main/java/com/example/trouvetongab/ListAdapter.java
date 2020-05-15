@@ -71,14 +71,30 @@ public class ListAdapter extends  RecyclerView.Adapter<ListAdapter.ViewHolder>{
 
         holder.img.setImageResource(getImageSrc(bk.getImage()));
 
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+/*        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ctxt, ListGab.class);
+              //  Toast.makeText(ctxt, "go to route", Toast.LENGTH_LONG).show();
+
                 Bundle bundle = new Bundle();
                 bundle.putInt("bank_id", bk.getId());
                 bundle.putString("bank_name", bk.getTitle());
                 i.putExtras(bundle);
+                ctxt.startActivity(i, bundle);
+            }
+        });*/
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent i = new Intent(ctxt, ListGab.class);
+                Intent i = new Intent(ctxt, AgenceGab.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("bank_id", bk.getId());
+                bundle.putString("bank_name", bk.getTitle());
+                i.putExtras(bundle);
+                //ctxt.startActivity(i, bundle);*/
+
                 ctxt.startActivity(i, bundle);
             }
         });

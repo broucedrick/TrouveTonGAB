@@ -56,8 +56,7 @@
         app:menu="@menu/drawer_menu_item"
         app:headerLayout="@layout/header"
         app:itemTextColor="#fff"
-        app:itemIconTint="#fff"
-        app:itemHorizontalPadding="50dp">
+        app:itemIconTint="#fff">
 
     </com.google.android.material.navigation.NavigationView>
 

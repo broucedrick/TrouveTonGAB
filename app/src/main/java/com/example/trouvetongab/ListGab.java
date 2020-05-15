@@ -5,9 +5,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 //import androidx.appcompat.widget.SearchView;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -23,6 +28,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -32,6 +38,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -55,13 +71,19 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
     ActionBarDrawerToggle toggle;
 
     LoadingDialog loadingDialog;
-
+    GoogleSignInClient mGoogleSignInClient;
+    private String nom;
+    private String email;
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_gab);
+
+        SharedPreferences mSharedPreferences = getSharedPreferences("User Data", Context.MODE_PRIVATE);
+        nom = mSharedPreferences.getString("nom","");
+        email = mSharedPreferences.getString("email", "");
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.startLoadingDialog();
@@ -78,6 +100,34 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
         setSupportActionBar(toolbar);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+
+      //  View headerView = drawerNavView.getHeaderView(0);
+
+/*        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            //String personName = acct.getDisplayName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+            //Toast.makeText(this, personPhoto.toString(), Toast.LENGTH_LONG).show();
+
+            ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
+            TextView avatar_name = (TextView) headerView.findViewById(R.id.avatar_name);
+
+
+            avatar_name.setText(personEmail);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.ic_launcher_background);
+            requestOptions.error(R.drawable.ic_launcher_background);
+
+            Glide.with(this).load(personPhoto)
+                    .apply(requestOptions.circleCrop()).thumbnail(0.5f).into(avatar);
+        }*/
 
         toggle = new ActionBarDrawerToggle(ListGab.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);
@@ -115,7 +165,7 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
         bundle = getIntent().getExtras();
         int bank_id = bundle.getInt("bank_id");
 
-        String URL_GAB = "https://trouvetongab.000webhostapp.com/getGab.php?id="+bank_id;
+        String URL_GAB = "https://digitalfinances.innovstech.com/getGab.php?id="+bank_id;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GAB,
                 new Response.Listener<String>() {
@@ -133,8 +183,9 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
 
                                 String title = b.getString("title");
                                 String location = b.getString("location");
+                                int posted = b.getInt("posted");
 
-                                gb.add(new Gab(title, location));
+                                gb.add(new Gab(title, location, posted));
 
                             }
                             mAdapter = new ListGabAdapter(ListGab.this, gb);
@@ -156,11 +207,51 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
         requestQueue.add(stringRequest);
     }
 
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.search_menu, menu);
         return true;
+    }
+*/
+public void logout_fb() {
+    if (AccessToken.getCurrentAccessToken() != null) {
+        LoginManager.getInstance().logOut();
+        startActivity(new Intent(this, login.class));
+        // Toast.makeText(getApplicationContext(),"facebook deconnecter",Toast.LENGTH_LONG).show();
+    }
+}
+
+    public void logout_gl() {
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                //  Toast.makeText(MainActivity.this, "google deconnecter ... ", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), login.class));
+                finish();
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.apropos:
+                //Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, Apropos.class));
+                break;
+            case R.id.dnx:
+                Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();
+                logout_fb();
+                logout_gl();
+                clearPrefData();
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return false;
     }
 
     @Override
@@ -176,19 +267,11 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
         else
             super.onBackPressed();
     }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.apropos:
-                //Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, Apropos.class));
-                break;
-            case R.id.dnx:
-                Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return false;
+    private void clearPrefData(){
+        SharedPreferences mSharedPreferences = getSharedPreferences("User Data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+        mEditor.clear().apply();
     }
+
+
 }

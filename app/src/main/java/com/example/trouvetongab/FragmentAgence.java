@@ -1,15 +1,20 @@
 package com.example.trouvetongab;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -20,15 +25,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 
@@ -36,18 +37,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
-    TextView text;
     private GoogleMap mMap;
     View v;
-    private GoogleMap googleMap;
-    FragmentManager getSupportFragmentManager;
- /*   public FragmentAgence(){
+    private List latLngList = new ArrayList<>();
+    private List<String> titleList = new ArrayList<>();
+    //ProgressDialog progressDialog = new ProgressDialog(getActivity());
+   DialogFragment  progressDialogs = new DialogFragment();
 
-    }*/
+
+    int bankid;
+
+    public FragmentAgence(int id){
+        this.bankid = id;
+    }
 
 
 
@@ -57,31 +64,134 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
         v = inflater.inflate(R.layout.activity_gab_map, container, false);
 
 
+
+        if (ContextCompat.checkSelfPermission(this.getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)){
+                ActivityCompat.requestPermissions(this.getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }else{
+                ActivityCompat.requestPermissions(this.getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+        }
+
         return v;
     }
-    @Override
 
+    @Override
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
+
         super.onActivityCreated(savedInstanceState);
-        String URL_AGENCE = "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyA1VRrkzXGFNAd1xh32eVePw3tgv9FKqJU&ftid=";
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+
+    }
+
+
+    public void onMapReady(final GoogleMap googleMap) {
+        mMap = googleMap;
+
+       mMap.animateCamera(CameraUpdateFactory.zoomTo((float) 5.909));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+
+        String URL_AGENCE = "https://digitalfinances.innovstech.com/getAgence.php?id="+bankid;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
+        StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(ListGab.this, "Connecté", Toast.LENGTH_LONG).show();
                         try {
                             if(response.length() > 0){
                             }
-                            JSONArray gab = new JSONArray(response);
-                            //Toast.makeText(ListGab.this, gab.toString(), Toast.LENGTH_LONG).show();
-                            for (int i = 0; i < gab.length(); i++) {
+                            JSONArray agence = new JSONArray(response);
+                            for (int i = 0; i < agence.length(); i++) {
+                                JSONObject b = agence.getJSONObject(i);
+                                final String title = b.getString("title");
+                                String location = b.getString("location");
+                                for (String data : location.split("!")){
+                                    if(data.contains("1s0")){
+                                        String code = data.replace("1s", "");
+                                        String URL_AGENCE = "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyDnQuzadpPIOWJSUBgzQVKZ71ODTyADChc&ftid="+code;
+                                        StringRequest SRequests = new StringRequest(Request.Method.GET, URL_AGENCE,
+                                                new Response.Listener<String>() {
+
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        try {
+                                                            if(response.length() > 0){
+                                                            }
+
+                                                            JSONObject obj = new JSONObject(response);
+                                                            JSONObject obj_resl = obj.getJSONObject("result");
+                                                            JSONObject obj_geo = obj_resl.getJSONObject("geometry");
+                                                            JSONObject obj_location = obj_geo.getJSONObject("location");
 
 
+                                                            String lat = obj_location.getString("lat");
+                                                            String lng = obj_location.getString("lng");
+                                                            Double Nlat = Double.parseDouble(lat);
+                                                            Double Nlng = Double.parseDouble(lng);
+                                                            Toast.makeText(getActivity(), title +"  et  "+ lat +" et "+ lng, Toast.LENGTH_SHORT).show();
+
+
+                                                            if (ContextCompat.checkSelfPermission(getActivity(),
+                                                                    Manifest.permission.ACCESS_FINE_LOCATION)
+                                                                    == PackageManager.PERMISSION_GRANTED) {
+
+
+
+                                                                    LatLng cord = new LatLng(Nlat,Nlng);
+                                                                    mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
+                                                                    mMap.setMyLocationEnabled(true);
+
+                                                            }else if (ContextCompat.checkSelfPermission(getActivity(),
+                                                                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                                                                    == PackageManager.PERMISSION_GRANTED){
+
+
+                                                                LatLng cord = new LatLng(Nlat,Nlng);
+                                                                mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                                                mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
+                                                                mMap.setMyLocationEnabled(true);
+                                                            }else{
+                                                                Toast.makeText(getActivity(), "impossible de verifier ma position1", Toast.LENGTH_LONG).show();
+
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+
+                                                    }
+                                                },
+                                                new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                        RequestQueue requestQueues = Volley.newRequestQueue(getContext());
+                                        requestQueues.add(SRequests);
+
+
+                                    }else if (data.contains("1s0?")) {
+                                        Toast.makeText(getActivity(), "veillez revoir le liens de geocalisation de l'agence", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
                             }
-
+                            // mAdapter = new GabListAdapter(getContext(), gabs);
+                            // recyclerView.setAdapter(mAdapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -95,34 +205,9 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                         //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
 
-
-
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
-
-    }
-
-
-
-
-
-
-
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(37.4233438,-122.0728817);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+        RequestQueue requestQueuess = Volley.newRequestQueue(getContext());
+        requestQueuess.add(SRequest);
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.trouvetongab;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -13,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,8 @@ public class AgenceGab extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerFragAdapter adapter;
+    DialogFragment progressDialogs = new DialogFragment();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +49,10 @@ public class AgenceGab extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new ViewPagerFragAdapter(getSupportFragmentManager(), bundle);
 
-
-        adapter.AddFragment(new FragmentAgence() , "Agences");
+       // loadingDialog.startLoadingDialog();
+       // progressDialog.show();
         adapter.AddFragment(new FragmentGab(bundle.getInt("bank_id")), "GAB/DAB");
+        adapter.AddFragment(new FragmentAgence(bundle.getInt("bank_id")) , "Agences");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

@@ -96,6 +96,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     name = me.optString("name");
                                     String email = me.optString("email");
                                     String id = me.optString("id");
+                                    Toast.makeText(getApplicationContext(),name,Toast.LENGTH_LONG).show();
+
+
 
                                     Bundle bundle = new Bundle();
                                     bundle.putString("id", id);
@@ -217,7 +220,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
             bundle.putString("ggle",google);
             i.putExtras(bundle);
             connection(login.this,userName,userEmail,google);
+            Toast.makeText(getApplicationContext(),userName + userEmail ,Toast.LENGTH_LONG).show();
+
             storeUserData(userName,userEmail);
+
             startActivity(i, bundle);
             finish();
 

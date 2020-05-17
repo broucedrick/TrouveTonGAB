@@ -74,11 +74,14 @@ public class ListAdapter extends  RecyclerView.Adapter<ListAdapter.ViewHolder>{
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ctxt, ListGab.class);
+                //Intent i = new Intent(ctxt, ListGab.class);
+                Intent i = new Intent(ctxt, AgenceGab.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("bank_id", bk.getId());
                 bundle.putString("bank_name", bk.getTitle());
                 i.putExtras(bundle);
+                //ctxt.startActivity(i, bundle);*/
+
                 ctxt.startActivity(i, bundle);
             }
         });

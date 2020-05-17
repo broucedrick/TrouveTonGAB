@@ -2,11 +2,18 @@ package com.example.trouvetongab;
 
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,7 +45,8 @@ public class AgenceGab extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new ViewPagerFragAdapter(getSupportFragmentManager(), bundle);
 
-        adapter.AddFragment(new FragmentAgence(), "Agences");
+
+        adapter.AddFragment(new FragmentAgence() , "Agences");
         adapter.AddFragment(new FragmentGab(bundle.getInt("bank_id")), "GAB/DAB");
 
         viewPager.setAdapter(adapter);

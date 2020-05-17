@@ -45,4 +45,5 @@ public class ViewPagerFragAdapter extends FragmentPagerAdapter {
         lsTitles.add(title);
     }
 
+
 }

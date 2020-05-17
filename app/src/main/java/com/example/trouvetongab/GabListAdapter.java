@@ -53,14 +53,14 @@ public class GabListAdapter extends RecyclerView.Adapter<GabListAdapter.ViewHold
 
     @NonNull
     @Override
-    public GabListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listgabitem_layout, parent, false);
-        GabListAdapter.ViewHolder holder = new GabListAdapter.ViewHolder(view);
+        ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GabListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Gab gb = dataset.get(position);
         holder.gabname.setText(gb.getTitle());
 

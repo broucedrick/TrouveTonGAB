@@ -28,8 +28,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -46,6 +52,7 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
     Toolbar toolbar;
     NavigationView drawerNavView;
     ActionBarDrawerToggle toggle;
+    GoogleSignInClient mGoogleSignInClient;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -61,9 +68,14 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         View headerView = drawerNavView.getHeaderView(0);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
+/*        if (acct != null) {
             //String personName = acct.getDisplayName();
             String personEmail = acct.getEmail();
             String personId = acct.getId();
@@ -81,7 +93,7 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
 
             Glide.with(this).load(personPhoto)
                     .apply(requestOptions.circleCrop()).thumbnail(0.5f).into(avatar);
-        }
+        }*/
 
         toggle = new ActionBarDrawerToggle(ItineActivity.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);
@@ -136,6 +148,26 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
         else
             super.onBackPressed();
     }
+    public void logout_fb() {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            startActivity(new Intent(this, login.class));
+            // Toast.makeText(getApplicationContext(),"facebook deconnecter",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void logout_gl() {
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                //  Toast.makeText(MainActivity.this, "google deconnecter ... ", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), login.class));
+                finish();
+            }
+        });
+
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -145,6 +177,8 @@ public class ItineActivity extends AppCompatActivity implements NavigationView.O
                 startActivity(new Intent(this, Apropos.class));
                 break;
             case R.id.dnx:
+                logout_fb();
+                logout_gl();
                 Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();
                 break;
         }

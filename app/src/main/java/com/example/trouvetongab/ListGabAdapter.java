@@ -35,7 +35,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHolder> implements Filterable {
     private List<Gab> dataset;
@@ -56,8 +55,10 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
         TextView gabname;
         ImageView ic;
         CardView gabLayout;
+        TextView aucun;
         public ViewHolder(View v) {
             super(v);
+            aucun = v.findViewById(R.id.aucun);
             btniti = v.findViewById(R.id.btniti);
             gabname = v.findViewById(R.id.gabName);
             gabLayout = v.findViewById(R.id.gabLayout);
@@ -88,6 +89,10 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ctxt, ItineActivity.class);
+               // Intent i = new Intent(ctxt, Map.class);
+
+                Toast.makeText(ctxt, "go to itineraire", Toast.LENGTH_LONG).show();
+
                 Bundle bundle = new Bundle();
                 bundle.putString("url",dataset.get(position).getLocation());
                 bundle.putString("gabName", dataset.get(position).getTitle());
@@ -96,6 +101,12 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
             }
 
         });
+
+//        if(gabname.size() <= 0){
+//            holder.aucun.setVisibility(View.VISIBLE);
+//        }else{
+//            holder.aucun.setVisibility(View.GONE);
+//        }
     }
 
     public Bitmap StringToBitMap(String image){
@@ -135,7 +146,9 @@ public class ListGabAdapter extends  RecyclerView.Adapter<ListGabAdapter.ViewHol
 
                             filteredList.add(gab);
                         }
+
                     }
+
                 }
 
 

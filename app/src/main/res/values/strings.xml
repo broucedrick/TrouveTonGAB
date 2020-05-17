@@ -2,10 +2,14 @@
     <string name="app_name">Trouve Ton GAB</string>
     <string name="drawerOpen">drawerOpen</string>
     <string name="drawerClose">drawerClose</string>
-    <string name="facebook_app_id">1781431602009159</string>
+    <!--<string name="facebook_app_id">1781431602009159</string>
     <string name="fb_login_protocol_scheme">fb1781431602009159</string>
-    <string name="title_activity_agence_gab">AgenceGab</string>
+    <string name="title_activity_agence_gab">AgenceGab</string>-->
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
 
+    <string name="facebook_app_id">274838633545158</string>
+    <string name="fb_login_protocol_scheme">fb274838633545158</string>
+    <string name="title_activity_agence_gab">v</string>
+    <string name="title_activity_gab_map">Map</string>
 </resources>

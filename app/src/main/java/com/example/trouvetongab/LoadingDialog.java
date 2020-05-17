@@ -8,10 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+
 public class LoadingDialog {
+
+    private static final int SIGN_IN = 0;
 
     private Activity activity;
     private AlertDialog alertDialog;
+    private GoogleApiClient googleApiClient;
 
     LoadingDialog(Activity mActivity){
         activity = mActivity;
@@ -45,6 +52,28 @@ public class LoadingDialog {
             public void onClick(View v) {
                 alertDialog.dismiss();
                 activity.recreate();
+            }
+        });
+
+    }
+    void startWarningDialog_log(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.loadingfailed_dialog, null);
+        builder.setView(view);
+
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        TextView reessayer = view.findViewById(R.id.reload_bt);
+        reessayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+             //   activity.recreate();
             }
         });
 

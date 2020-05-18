@@ -27,8 +27,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
+
+
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -127,7 +127,7 @@ public class FragmentGab extends Fragment {
                                     if(data.contains("1s0")){
                                         String code = data.replace("1s", "");
                                         //Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                        extract(code);
+                                        //extract(code);
                                     }
                                 }
                             }
@@ -151,7 +151,7 @@ public class FragmentGab extends Fragment {
         requestQueues.add(SRequest);
         return v;
     }
-    public String extract(String code){
+    /*public String extract(String code){
         Places.initialize(getApplicationContext(), "AIzaSyA1VRrkzXGFNAd1xh32eVePw3tgv9FKqJU");
         PlacesClient placesClient = Places.createClient(getActivity());
         //placesClient.fetchPlace()
@@ -191,7 +191,7 @@ public class FragmentGab extends Fragment {
 
         return code;
 
-    }
+    }*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

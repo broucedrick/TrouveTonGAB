@@ -27,8 +27,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -37,6 +37,7 @@ public class FragmentGab extends Fragment {
     private RecyclerView recyclerView;
     private GabListAdapter mAdapter;
     private EditText searchBar;
+    private List<String> latLongs;
 
     private List<Gab> gabs = new ArrayList<>();
 
@@ -107,95 +108,13 @@ public class FragmentGab extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
 
-
-
-        String URL_AGENCE = "https://digitalfinances.innovstech.com/getAgence.php?id="+bank_id;
-        //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
-        StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            if(response.length() > 0){
-                            }
-                            JSONArray agence = new JSONArray(response);
-                            for (int i = 0; i < agence.length(); i++) {
-                                JSONObject b = agence.getJSONObject(i);
-                                String title = b.getString("title");
-                                String location = b.getString("location");
-                                for (String data : location.split("!")){
-                                    if(data.contains("1s0")){
-                                        String code = data.replace("1s", "");
-                                        //Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                        //extract(code);
-                                    }
-                                }
-                            }
-                           // mAdapter = new GabListAdapter(getContext(), gabs);
-                           // recyclerView.setAdapter(mAdapter);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        RequestQueue requestQueues = Volley.newRequestQueue(getContext());
-        requestQueues.add(SRequest);
         return v;
     }
-    /*public String extract(String code){
-        Places.initialize(getApplicationContext(), "AIzaSyA1VRrkzXGFNAd1xh32eVePw3tgv9FKqJU");
-        PlacesClient placesClient = Places.createClient(getActivity());
-        //placesClient.fetchPlace()
-        String URL_AGENCE = "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyA1VRrkzXGFNAd1xh32eVePw3tgv9FKqJU&ftid="+code;
-        //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
-        StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            if(response.length() > 0){
-                            }
-                            Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-
-                            JSONArray mapLatLong = new JSONArray(response);
-                            for (int i = 0; i < mapLatLong.length(); i++) {
-                                JSONObject b = mapLatLong.getJSONObject(i);
-
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        RequestQueue requestQueues = Volley.newRequestQueue(getContext());
-        requestQueues.add(SRequest);
-
-        return code;
-
-    }*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
+
 }

@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     NavigationView drawerNavView;
     ActionBarDrawerToggle toggle;
-    GoogleMap mMap;
 
     String request_url = "https://digitalfinances.innovstech.com/getImage.php";
 
@@ -129,13 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, login.class));
 
         }else{
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
 
-                mMap.setMyLocationEnabled(true);
-            } else {
-                // Show rationale and request permission.
-            }
 
 
             setContentView(R.layout.activity_main);

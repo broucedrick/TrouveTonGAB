@@ -78,8 +78,9 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
 
        // loadingDialog.startLoadingDialog();
        // progressDialog.show();
-        adapter.AddFragment(new FragmentGab(bundle.getInt("bank_id")), "GAB/DAB");
-        adapter.AddFragment(new FragmentAgence(bundle.getInt("bank_id")) , "Agences");
+        adapter.AddFragment(new FragmentAgence(bundle.getInt("bank_id"), this) , "Agences");
+        adapter.AddFragment(new FragmentGab(bundle.getInt("bank_id"), this), "GAB/DAB");
+
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

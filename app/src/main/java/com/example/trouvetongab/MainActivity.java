@@ -29,8 +29,10 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -153,6 +155,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setSupportActionBar(toolbar);
             getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
 
 /*
             View headerView = drawerNavView.getHeaderView(0);
@@ -317,26 +324,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-@Override
-public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == 1) {
-       // Toast.makeText(MainActivity.this, "bien recut", Toast.LENGTH_LONG).show();
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+           // Toast.makeText(MainActivity.this, "bien recut", Toast.LENGTH_LONG).show();
 
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted.
-            Toast.makeText(MainActivity.this, "permission accepter", Toast.LENGTH_LONG).show();
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                Toast.makeText(MainActivity.this, "permission accepter", Toast.LENGTH_LONG).show();
 
-        } else {
-            // User refused to grant permission. You can add AlertDialog here
-            requestPermission();
-            Toast.makeText(MainActivity.this, "veillez accepter avant de continuer", Toast.LENGTH_LONG).show();
+            } else {
+                // User refused to grant permission. You can add AlertDialog here
+                requestPermission();
+                Toast.makeText(MainActivity.this, "veillez accepter avant de continuer", Toast.LENGTH_LONG).show();
+            }
         }
     }
-}
-
-
-
 
 
     @Override

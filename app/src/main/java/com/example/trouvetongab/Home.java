@@ -80,6 +80,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
+            drawerNavView.setNavigationItemSelectedListener(this);
 
             imageSlide = new ArrayList<>();
             imageSlide.add(getResources().getDrawable(R.drawable.img1));
@@ -205,7 +206,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        super.finishAffinity();
     }
 
     public void logout_fb() {

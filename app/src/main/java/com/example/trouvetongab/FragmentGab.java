@@ -1,5 +1,8 @@
 package com.example.trouvetongab;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,17 +46,21 @@ public class FragmentGab extends Fragment {
     private List<Gab> gabs = new ArrayList<>();
 
     LoadingDialog loadingDialog;
+    Context context;
 
     View v;
     int bankid;
 
-    public FragmentGab(int bankID) {
+
+    public FragmentGab(int bankID, Context context) {
         this.bankid = bankID;
+        this.context = context;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.gab_frag, container, false);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.gab_list);
@@ -67,30 +75,41 @@ public class FragmentGab extends Fragment {
 
         int bank_id = bankid;
 
+        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setView(R.layout.loading_dialog);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+
         String URL_GAB = "https://digitalfinances.innovstech.com/getGab.php?id="+bank_id;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GAB,
                 new Response.Listener<String>() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onResponse(String response) {
+
                         //Toast.makeText(ListGab.this, "Connecté", Toast.LENGTH_LONG).show();
                         try {
                             if(response.length() > 0){
+
+                                alertDialog.dismiss();
+                                JSONArray gab = new JSONArray(response);
+                                for (int i = 0; i < gab.length(); i++) {
+                                    JSONObject b = gab.getJSONObject(i);
+
+                                    String title = b.getString("title");
+                                    String location = b.getString("location");
+                                    int posted = b.getInt("posted");
+                                    // Toast.makeText(getActivity(), title, Toast.LENGTH_SHORT).show();
+
+                                    gabs.add(new Gab(title, location, posted));
+
+                                }
+
+                                mAdapter = new GabListAdapter(getContext(), gabs);
+                                recyclerView.setAdapter(mAdapter);
                             }
-                            JSONArray gab = new JSONArray(response);
-                            for (int i = 0; i < gab.length(); i++) {
-                                JSONObject b = gab.getJSONObject(i);
 
-                                String title = b.getString("title");
-                                String location = b.getString("location");
-                                int posted = b.getInt("posted");
-                               // Toast.makeText(getActivity(), title, Toast.LENGTH_SHORT).show();
-
-                                gabs.add(new Gab(title, location, posted));
-
-                            }
-                            mAdapter = new GabListAdapter(getContext(), gabs);
-                            recyclerView.setAdapter(mAdapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -107,6 +126,8 @@ public class FragmentGab extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
+
+
 
         return v;
     }

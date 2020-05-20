@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19">
+        app:layout_constraintVertical_bias="0.24000001">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/btngoogle"
@@ -143,17 +143,59 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/ubuntu_r"
+        android:gravity="center"
+        android:text="Indentifiez-vous"
+        android:textColor="#000"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/view2" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginHorizontal="95dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/view2">
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="#000"
+            android:fontFamily="@font/ubuntu_r"
+            android:text="J'ai lu et j'accepte les"
+            android:textColor="#000" />
+
+        <TextView
+            android:gravity="right"
+            android:id="@+id/condition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#e2b80e"
+            android:fontFamily="@font/ubuntu_r"
+            android:textStyle="bold"
+            android:text="condition"
+            />
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="#000"
-            android:text="CheckBox" />
+            android:fontFamily="@font/ubuntu_r"
+            android:textStyle="italic"
+            android:text="Vous devez cochez cette case avant de continuez"
+            />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

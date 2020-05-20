@@ -329,7 +329,89 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                             == PackageManager.PERMISSION_GRANTED) {
 
                                         LatLng cord = new LatLng(Nlat,Nlng);
-                                        mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                        switch (bankid){
+                                            case 1:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_boa_marker_foreground))));
+                                                break;
+                                            case 2:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_baci_marker_foreground))));
+                                                break;
+                                            case 3:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bda_marker_foreground))));
+                                                break;
+                                            case 4:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_nsia_marker_foreground))));
+                                                break;
+                                            case 5:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bicici_marker_foreground))));
+                                                break;
+                                            case 6:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_afb_marker_foreground))));
+                                                break;
+                                            case 7:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bni_marker_foreground))));
+                                                break;
+                                            case 8:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sib_marker_foreground))));
+                                                break;
+                                            case 9:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_ecobank_marker_foreground))));
+                                                break;
+                                            case 10:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_gtbank_marker_foreground))));
+                                                break;
+                                            case 11:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_citi_marker_foreground))));
+                                                break;
+                                            case 12:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bridge_marker_foreground))));
+                                                break;
+                                            case 13:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_orabank_marker_foreground))));
+                                                break;
+                                            case 14:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stanbic_marker_foreground))));
+                                                break;
+                                            case 15:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sgbci_marker_foreground))));
+                                                break;
+                                            case 16:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stc_marker_foreground))));
+                                                break;
+                                            case 17:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bp_marker_foreground))));
+                                                break;
+                                            case 18:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bduci_marker_foreground))));
+                                                break;
+                                            case 19:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bdfi_marker_foreground))));
+                                                break;
+                                            case 20:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bhci_marker_foreground))));
+                                                break;
+                                            case 21:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_versus_marker_foreground))));
+                                                break;
+                                            case 22:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_uba_marker_foreground))));
+                                                break;
+                                            case 23:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bmci_marker_foreground))));
+                                                break;
+                                            case 24:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_diamond_marker_foreground))));
+                                                break;
+                                            case 25:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_coris_marker_foreground))));
+                                                break;
+                                            case 26:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bsic_marker_foreground))));
+                                                break;
+                                            default:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker()));
+                                                break;
+                                        }
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
                                         mMap.setMyLocationEnabled(true);
 
@@ -339,7 +421,89 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
 
                                         LatLng cord = new LatLng(Nlat,Nlng);
-                                        mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                        switch (bankid){
+                                            case 1:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_boa_marker_foreground))));
+                                                break;
+                                            case 2:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_baci_marker_foreground))));
+                                                break;
+                                            case 3:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bda_marker_foreground))));
+                                                break;
+                                            case 4:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_nsia_marker_foreground))));
+                                                break;
+                                            case 5:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bicici_marker_foreground))));
+                                                break;
+                                            case 6:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_afb_marker_foreground))));
+                                                break;
+                                            case 7:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bni_marker_foreground))));
+                                                break;
+                                            case 8:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sib_marker_foreground))));
+                                                break;
+                                            case 9:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_ecobank_marker_foreground))));
+                                                break;
+                                            case 10:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_gtbank_marker_foreground))));
+                                                break;
+                                            case 11:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_citi_marker_foreground))));
+                                                break;
+                                            case 12:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bridge_marker_foreground))));
+                                                break;
+                                            case 13:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_orabank_marker_foreground))));
+                                                break;
+                                            case 14:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stanbic_marker_foreground))));
+                                                break;
+                                            case 15:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sgbci_marker_foreground))));
+                                                break;
+                                            case 16:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stc_marker_foreground))));
+                                                break;
+                                            case 17:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bp_marker_foreground))));
+                                                break;
+                                            case 18:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bduci_marker_foreground))));
+                                                break;
+                                            case 19:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bdfi_marker_foreground))));
+                                                break;
+                                            case 20:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bhci_marker_foreground))));
+                                                break;
+                                            case 21:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_versus_marker_foreground))));
+                                                break;
+                                            case 22:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_uba_marker_foreground))));
+                                                break;
+                                            case 23:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bmci_marker_foreground))));
+                                                break;
+                                            case 24:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_diamond_marker_foreground))));
+                                                break;
+                                            case 25:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_coris_marker_foreground))));
+                                                break;
+                                            case 26:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bsic_marker_foreground))));
+                                                break;
+                                            default:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker()));
+                                                break;
+                                        }
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
                                         mMap.setMyLocationEnabled(true);
                                     }else{

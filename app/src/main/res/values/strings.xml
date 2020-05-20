@@ -6,4 +6,8 @@
     <string name="fb_login_protocol_scheme">fb274838633545158</string>
     <string name="title_activity_agence_gab">v</string>
     <string name="title_activity_gab_map">Map</string>
+    <string name="gps_disabled_message">Veillez verifier si vous avez activer la geolocalisation</string>
+    <string name="gps_network_not_enabled">verifie</string>
+    <string name="open_location_settings">ouvrir</string>
+    <string name="Cancel">sortir</string>
 </resources>

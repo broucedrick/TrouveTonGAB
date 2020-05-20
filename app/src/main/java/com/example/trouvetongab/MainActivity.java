@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -14,17 +15,22 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,9 +56,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -99,11 +112,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public String nom;
     public String email;
+    final static int REQUEST_LOCATION = 199;
+
 
     private GoogleApiClient googleApiClient;
     private GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
+    private  static String fine_location = Manifest.permission.ACCESS_FINE_LOCATION;
+    private  static String coarse_location = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private  static final int requestcode_permission = 1234;
 
+    private Boolean locationAccept = false;
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else{
 
 
-
+            requestPermission();
             setContentView(R.layout.activity_main);
 
             loadingDialog = new LoadingDialog(this);
@@ -300,11 +319,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // specify an adapter (see also next example)
 
 
+            // getlocation();
+
 
         }
 
 
     }
+    public void requestPermission(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+
+// Permission is not granted
+// Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+               // Toast.makeText(MainActivity.this, "permission deja demande + ", Toast.LENGTH_LONG).show();
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+
+            } else {
+
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+              //  Toast.makeText(MainActivity.this, "demande de la permission  ", Toast.LENGTH_LONG).show();
+
+                // MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+         //   Toast.makeText(MainActivity.this, "permission deja activer ", Toast.LENGTH_LONG).show();
+
+// Permission has already been granted
+        }
+    }
+
+
+
+@Override
+public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (requestCode == 1) {
+       // Toast.makeText(MainActivity.this, "bien recut", Toast.LENGTH_LONG).show();
+
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted.
+            Toast.makeText(MainActivity.this, "permission accepter", Toast.LENGTH_LONG).show();
+
+        } else {
+            // User refused to grant permission. You can add AlertDialog here
+            requestPermission();
+            Toast.makeText(MainActivity.this, "veillez accepter avant de continuer", Toast.LENGTH_LONG).show();
+        }
+    }
+}
+
 
     public class MyTimerTask extends TimerTask{
 

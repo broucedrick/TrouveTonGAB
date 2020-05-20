@@ -78,13 +78,13 @@ public class FragmentGab extends Fragment {
                             if(response.length() > 0){
                             }
                             JSONArray gab = new JSONArray(response);
-                            //Toast.makeText(ListGab.this, gab.toString(), Toast.LENGTH_LONG).show();
                             for (int i = 0; i < gab.length(); i++) {
                                 JSONObject b = gab.getJSONObject(i);
 
                                 String title = b.getString("title");
                                 String location = b.getString("location");
                                 int posted = b.getInt("posted");
+                               // Toast.makeText(getActivity(), title, Toast.LENGTH_SHORT).show();
 
                                 gabs.add(new Gab(title, location, posted));
 

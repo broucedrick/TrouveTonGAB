@@ -91,7 +91,7 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
             drawerLayout.closeDrawer(GravityCompat.START);
         else {*/
             super.onBackPressed();
-            finish();
+            super.finish();
         //}
     }
 

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -278,110 +279,55 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
     }
 
     public void onMapReady(final GoogleMap googleMap) {
-       /* mMap = googleMap;
+       mMap = googleMap;
 
         mMap.animateCamera(CameraUpdateFactory.zoomTo((float) 5.909));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-
-         String URL_AGENCE = "http://digitalfinances.innovstech.com/getLatLng.php?id="+bankid;
+        String URL_AGENCE = "http://digitalfinances.innovstech.com/getLatLng.php?id="+bankid;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
-         StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
+        StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             if(response.length() > 0){
-                            }
-                            JSONArray agence = new JSONArray(response);
-                            for (int i = 0; i < agence.length(); i++) {
-                                JSONObject b = agence.getJSONObject(i);
-                                final String title = b.getString("title");
-                                String lng = b.getString("longitude");
-                                String lat = b.getString("latitude");
-                                Double Nlat = Double.parseDouble(lat);
-                                Double Nlng = Double.parseDouble(lng);
-                                if (ContextCompat.checkSelfPermission(getActivity(),
-                                        Manifest.permission.ACCESS_FINE_LOCATION)
-                                        == PackageManager.PERMISSION_GRANTED) {
+                                JSONArray agence = new JSONArray(response);
+                                for (int i = 0; i < agence.length(); i++) {
+                                    JSONObject b = agence.getJSONObject(i);
+                                    final String title = b.getString("title");
+                                    String lng = b.getString("longitude");
+                                    String lat = b.getString("latitude");
 
-                                    LatLng cord = new LatLng(Nlat,Nlng);
-                                    mMap.addMarker(new MarkerOptions().position(cord).title(title));
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
-                                    mMap.setMyLocationEnabled(true);
+                                    Double Nlat = Double.parseDouble(lat);
+                                    Double Nlng = Double.parseDouble(lng);
 
-                                }else if (ContextCompat.checkSelfPermission(getActivity(),
-                                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                                        == PackageManager.PERMISSION_GRANTED){
+                                    if (ContextCompat.checkSelfPermission(getActivity(),
+                                            Manifest.permission.ACCESS_FINE_LOCATION)
+                                            == PackageManager.PERMISSION_GRANTED) {
+
+                                        LatLng cord = new LatLng(Nlat,Nlng);
+                                        mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
+                                        mMap.setMyLocationEnabled(true);
+
+                                    }else if (ContextCompat.checkSelfPermission(getActivity(),
+                                            Manifest.permission.ACCESS_COARSE_LOCATION)
+                                            == PackageManager.PERMISSION_GRANTED){
 
 
-                                    LatLng cord = new LatLng(Nlat,Nlng);
-                                    mMap.addMarker(new MarkerOptions().position(cord).title(title));
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
-                                    mMap.setMyLocationEnabled(true);
-                                }else{
-                                    Toast.makeText(getActivity(), "permission non occorder ", Toast.LENGTH_SHORT).show();
+                                        LatLng cord = new LatLng(Nlat,Nlng);
+                                        mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
+                                        mMap.setMyLocationEnabled(true);
+                                    }else{
+                                        Toast.makeText(getActivity(), "permission non occorder ", Toast.LENGTH_SHORT).show();
 
+                                    }
                                 }
 
-
-                               // for (String data : location.split("!")){
-                                 //   if(data.contains("1s0")){
-                                    //    String code = data.replace("1s", "");
-                                      *//*  String URL_AGENCE = "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyDnQuzadpPIOWJSUBgzQVKZ71ODTyADChc&ftid="+code;
-                                        StringRequest SRequests = new StringRequest(Request.Method.GET, URL_AGENCE,
-                                                new Response.Listener<String>() {
-
-                                                    @Override
-                                                    public void onResponse(String response) {
-                                                        try {
-                                                            if(response.length() > 0){
-                                                            }*//*
-*//*
-                                                            JSONObject obj = new JSONObject(response);
-                                                            JSONObject obj_resl = obj.getJSONObject("result");
-                                                            JSONObject obj_geo = obj_resl.getJSONObject("geometry");
-                                                            JSONObject obj_location = obj_geo.getJSONObject("location");
-
-
-                                                            String lat = obj_location.getString("lat");
-                                                            String lng = obj_location.getString("lng");*//*
-
-                                                            //Toast.makeText(getActivity(), title +"  et  "+ lat +" et "+ lng, Toast.LENGTH_SHORT).show();
-
-
-
-
-
-                                     *//*                   } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }*//*
-
-
-                                                 //   }
-                                           //     },
-                        *//*                        new Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });*//*
-
-*//*
-                                        RequestQueue requestQueues = Volley.newRequestQueue(getContext());
-                                        requestQueues.add(SRequests);
-*//*
-
-*//*
-                                    }else if (data.contains("1s0?")) {
-                                        Toast.makeText(getActivity(), "veillez revoir le liens de geocalisation de l'agence", Toast.LENGTH_SHORT).show();
-
-                                    }*//*
-                               // }
                             }
-                            // mAdapter = new GabListAdapter(getContext(), gabs);
-                            // recyclerView.setAdapter(mAdapter);
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -397,7 +343,8 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                 });
 
         RequestQueue requestQueuess = Volley.newRequestQueue(getContext());
-        requestQueuess.add(SRequest);*/
+        requestQueuess.add(SRequest);
+
 
     }
 

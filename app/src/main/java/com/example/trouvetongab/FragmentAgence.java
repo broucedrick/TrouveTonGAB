@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -34,10 +36,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -68,12 +73,15 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
     private  static String coarse_location = Manifest.permission.ACCESS_COARSE_LOCATION;
     private  static final int requestcode_permission = 1234;
     private Boolean locationAccept = false;
+   AlertDialog alertDialog;
+    Context context;
 
 
     int bankid;
 
-    public FragmentAgence(int id){
+    public FragmentAgence(int id, Context context){
         this.bankid = id;
+        this.context = context;
     }
 
 
@@ -83,7 +91,7 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
         v = inflater.inflate(R.layout.activity_gab_map, container, false);
 
-/*        String URL_AGENCE = "https://digitalfinances.innovstech.com/getAgence.php?id="+bankid;
+       /*String URL_AGENCE = "https://digitalfinances.innovstech.com/getAgence.php?id="+bankid;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
         StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
                 new Response.Listener<String>() {
@@ -99,7 +107,7 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                 JSONObject b = agence.getJSONObject(i);
                                 final String title = b.getString("title");
                                 String location = b.getString("location");
-                                //Toast.makeText(getActivity(),title, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(),title, Toast.LENGTH_SHORT).show();
 
                                for (String data : location.split("!")){
                                     if(data.contains("1s0")){
@@ -113,6 +121,7 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                                     public void onResponse(String response) {
                                                         try {
                                                             if(response.length() > 0){
+
                                                             }
 
                                                             JSONObject obj = new JSONObject(response);
@@ -165,9 +174,9 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                             e.printStackTrace();
                         }
 
-                    }*/
-              //  },
-/*                new Response.ErrorListener() {
+                    }
+                },
+               new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -240,6 +249,9 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
 
 
+
+
+
     public void active(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
         builder.setMessage(R.string.gps_disabled_message)
@@ -278,16 +290,26 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onMapReady(final GoogleMap googleMap) {
-       mMap = googleMap;
+        mMap = googleMap;
 
         mMap.animateCamera(CameraUpdateFactory.zoomTo((float) 5.909));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        String URL_AGENCE = "http://digitalfinances.innovstech.com/getLatLng.php?id="+bankid;
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setView(R.layout.loading_dialog);
+        alert.setCancelable(false);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+
+
+         String URL_AGENCE = "http://digitalfinances.innovstech.com/getLatLng.php?id="+bankid;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
         StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
                 new Response.Listener<String>() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onResponse(String response) {
                         try {
@@ -307,7 +329,89 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                             == PackageManager.PERMISSION_GRANTED) {
 
                                         LatLng cord = new LatLng(Nlat,Nlng);
-                                        mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                        switch (bankid){
+                                            case 1:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_boa_marker_foreground))));
+                                                break;
+                                            case 2:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_baci_marker_foreground))));
+                                                break;
+                                            case 3:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bda_marker_foreground))));
+                                                break;
+                                            case 4:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_nsia_marker_foreground))));
+                                                break;
+                                            case 5:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bicici_marker_foreground))));
+                                                break;
+                                            case 6:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_afb_marker_foreground))));
+                                                break;
+                                            case 7:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bni_marker_foreground))));
+                                                break;
+                                            case 8:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sib_marker_foreground))));
+                                                break;
+                                            case 9:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_ecobank_marker_foreground))));
+                                                break;
+                                            case 10:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_gtbank_marker_foreground))));
+                                                break;
+                                            case 11:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_citi_marker_foreground))));
+                                                break;
+                                            case 12:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bridge_marker_foreground))));
+                                                break;
+                                            case 13:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_orabank_marker_foreground))));
+                                                break;
+                                            case 14:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stanbic_marker_foreground))));
+                                                break;
+                                            case 15:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sgbci_marker_foreground))));
+                                                break;
+                                            case 16:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stc_marker_foreground))));
+                                                break;
+                                            case 17:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bp_marker_foreground))));
+                                                break;
+                                            case 18:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bduci_marker_foreground))));
+                                                break;
+                                            case 19:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bdfi_marker_foreground))));
+                                                break;
+                                            case 20:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bhci_marker_foreground))));
+                                                break;
+                                            case 21:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_versus_marker_foreground))));
+                                                break;
+                                            case 22:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_uba_marker_foreground))));
+                                                break;
+                                            case 23:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bmci_marker_foreground))));
+                                                break;
+                                            case 24:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_diamond_marker_foreground))));
+                                                break;
+                                            case 25:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_coris_marker_foreground))));
+                                                break;
+                                            case 26:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bsic_marker_foreground))));
+                                                break;
+                                            default:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker()));
+                                                break;
+                                        }
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
                                         mMap.setMyLocationEnabled(true);
 
@@ -317,17 +421,157 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
 
                                         LatLng cord = new LatLng(Nlat,Nlng);
-                                        mMap.addMarker(new MarkerOptions().position(cord).title(title));
+                                        switch (bankid){
+                                            case 1:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_boa_marker_foreground))));
+                                                break;
+                                            case 2:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_baci_marker_foreground))));
+                                                break;
+                                            case 3:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bda_marker_foreground))));
+                                                break;
+                                            case 4:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_nsia_marker_foreground))));
+                                                break;
+                                            case 5:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bicici_marker_foreground))));
+                                                break;
+                                            case 6:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_afb_marker_foreground))));
+                                                break;
+                                            case 7:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bni_marker_foreground))));
+                                                break;
+                                            case 8:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sib_marker_foreground))));
+                                                break;
+                                            case 9:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_ecobank_marker_foreground))));
+                                                break;
+                                            case 10:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_gtbank_marker_foreground))));
+                                                break;
+                                            case 11:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_citi_marker_foreground))));
+                                                break;
+                                            case 12:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bridge_marker_foreground))));
+                                                break;
+                                            case 13:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_orabank_marker_foreground))));
+                                                break;
+                                            case 14:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stanbic_marker_foreground))));
+                                                break;
+                                            case 15:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sgbci_marker_foreground))));
+                                                break;
+                                            case 16:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stc_marker_foreground))));
+                                                break;
+                                            case 17:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bp_marker_foreground))));
+                                                break;
+                                            case 18:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bduci_marker_foreground))));
+                                                break;
+                                            case 19:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bdfi_marker_foreground))));
+                                                break;
+                                            case 20:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bhci_marker_foreground))));
+                                                break;
+                                            case 21:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_versus_marker_foreground))));
+                                                break;
+                                            case 22:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_uba_marker_foreground))));
+                                                break;
+                                            case 23:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bmci_marker_foreground))));
+                                                break;
+                                            case 24:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_diamond_marker_foreground))));
+                                                break;
+                                            case 25:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_coris_marker_foreground))));
+                                                break;
+                                            case 26:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bsic_marker_foreground))));
+                                                break;
+                                            default:
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker()));
+                                                break;
+                                        }
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
                                         mMap.setMyLocationEnabled(true);
                                     }else{
                                         Toast.makeText(getActivity(), "permission non occorder ", Toast.LENGTH_SHORT).show();
 
                                     }
+
+
+                                    // for (String data : location.split("!")){
+                                    //   if(data.contains("1s0")){
+                                    //    String code = data.replace("1s", "");
+                                      /*  String URL_AGENCE = "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyDnQuzadpPIOWJSUBgzQVKZ71ODTyADChc&ftid="+code;
+                                        StringRequest SRequests = new StringRequest(Request.Method.GET, URL_AGENCE,
+                                                new Response.Listener<String>() {
+
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        try {
+                                                            if(response.length() > 0){
+                                                            }*/
+/*
+                                                            JSONObject obj = new JSONObject(response);
+                                                            JSONObject obj_resl = obj.getJSONObject("result");
+                                                            JSONObject obj_geo = obj_resl.getJSONObject("geometry");
+                                                            JSONObject obj_location = obj_geo.getJSONObject("location");
+
+
+                                                            String lat = obj_location.getString("lat");
+                                                            String lng = obj_location.getString("lng");*/
+
+                                    //Toast.makeText(getActivity(), title +"  et  "+ lat +" et "+ lng, Toast.LENGTH_SHORT).show();
+
+
+
+
+
+                                     /*                   } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }*/
+
+
+                                    //   }
+                                    //     },
+                        /*                        new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });*/
+
+/*
+                                        RequestQueue requestQueues = Volley.newRequestQueue(getContext());
+                                        requestQueues.add(SRequests);
+*/
+
+/*
+                                    }else if (data.contains("1s0?")) {
+                                        Toast.makeText(getActivity(), "veillez revoir le liens de geocalisation de l'agence", Toast.LENGTH_SHORT).show();
+
+                                    }*/
+                                    // }
                                 }
 
+                                alertDialog.dismiss();
                             }
 
+                            // mAdapter = new GabListAdapter(getContext(), gabs);
+                            // recyclerView.setAdapter(mAdapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -344,7 +588,6 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
         RequestQueue requestQueuess = Volley.newRequestQueue(getContext());
         requestQueuess.add(SRequest);
-
 
     }
 

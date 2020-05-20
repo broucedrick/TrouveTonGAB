@@ -14,7 +14,9 @@
         android:id="@+id/toolbar1"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:elevation="1dp"
+        app:layout_collapseMode="pin">
 
     </androidx.appcompat.widget.Toolbar>
 

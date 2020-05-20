@@ -42,6 +42,7 @@ public class LoadingDialog {
         LayoutInflater layoutInflater = activity.getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.loadingfailed_dialog, null);
         builder.setView(view);
+        builder.setCancelable(false);
 
         alertDialog = builder.create();
         alertDialog.show();
@@ -64,6 +65,8 @@ public class LoadingDialog {
         LayoutInflater layoutInflater = activity.getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.loadingfailed_dialog, null);
         builder.setView(view);
+
+        builder.setCancelable(false);
 
         alertDialog = builder.create();
         alertDialog.show();

@@ -58,6 +58,18 @@
         app:itemTextColor="#fff"
         app:itemIconTint="#fff">
 
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginStart="80dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginRight="100dp"
+            android:layout_marginBottom="0dp"
+            android:layout_gravity="bottom"
+            app:srcCompat="@drawable/digitale_finances_logo" />
+
     </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

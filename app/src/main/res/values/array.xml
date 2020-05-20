@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="incident_array">
+        <item>Nature de l\'incident</item>
+        <item>Fonds non reçu</item>
+        <item>Carte capturée</item>
+        <item>Double débit</item>
+        <item>Problème de connexion</item>
+        <item>Autre (précisez en commentaire)</item>
+    </string-array>
+</resources>

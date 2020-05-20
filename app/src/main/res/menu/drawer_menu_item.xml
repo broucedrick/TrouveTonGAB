@@ -6,6 +6,16 @@
         android:title="A propos"/>
 
     <item
+        android:id="@+id/mention"
+        android:icon="@drawable/ic_ml"
+        android:title="Mentions Légales"/>
+
+    <item
+        android:id="@+id/cgu"
+        android:icon="@drawable/ic_cgu"
+        android:title="Conditions d'utilisation (CGU)"/>
+
+    <item
         android:id="@+id/dnx"
         android:icon="@drawable/ic_logout"
         android:title="Deconnexion"/>

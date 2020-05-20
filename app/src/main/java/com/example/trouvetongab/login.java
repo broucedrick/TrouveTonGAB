@@ -3,6 +3,7 @@ package com.example.trouvetongab;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -48,6 +49,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
     SignInButton button_connection_ggle;
     LoginButton button_connection_fb;
+
+    CardView btnfb, btngoogle;
+
     private GoogleApiClient googleApiClient;
     private static final int SIGN_IN = 0 ;
     private static final int SIGN_FB = 0 ;
@@ -76,8 +80,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
         setContentView(R.layout.activity_login);
         button_connection_fb = findViewById(R.id.login_button);
-        button_connection_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
+        button_connection_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 //loadingDialog.dismissDialog();
@@ -91,7 +95,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 } else {
 
                                     JSONObject data = response.getJSONObject();
-                                    Intent i = new Intent(login.this, MainActivity.class);
+                                    Intent i = new Intent(login.this, Home.class);
 
                                     name = me.optString("name");
                                     String email = me.optString("email");
@@ -145,8 +149,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
         });
 
         //////////////////connnection google/////////////////
-        button_connection_ggle = findViewById(R.id.sign_in_button);
-        button_connection_ggle.setOnClickListener(new View.OnClickListener() {
+        //button_connection_ggle = findViewById(R.id.sign_in_button);
+        btngoogle = (CardView) findViewById(R.id.btngoogle);
+        btngoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 google();
@@ -210,7 +215,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
         String google = "google";
         if(result.isSuccess()){
             loadingDialog.dismissDialog();
-            Intent i = new Intent(login.this, MainActivity.class);
+            Intent i = new Intent(login.this, Home.class);
             GoogleSignInAccount account=result.getSignInAccount();
             userName = (account.getDisplayName());
             userEmail = (account.getEmail());

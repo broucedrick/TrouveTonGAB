@@ -30,21 +30,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,6 +84,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
     LoadingDialog loadingDialog;
     CheckBox checkBox;
     TextView condition;
+    GoogleSignInClient mGoogleSignInClient;
 
     private CallbackManager callbackManager;
 
@@ -324,7 +331,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
         button_connection_fb = findViewById(R.id.login_button);
 
         button_connection_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
             @Override
             public void onSuccess(LoginResult loginResult) {
                 //loadingDialog.dismissDialog();
@@ -344,7 +350,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     name = me.optString("name");
                                     String email = me.optString("email");
                                     String id = me.optString("id");
-                                    Toast.makeText(getApplicationContext(),name,Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(),name,Toast.LENGTH_LONG).show();
 
 
                                         Bundle bundle = new Bundle();
@@ -366,8 +372,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                             connection(login.this,name,email,fb);
                                         }
                                     }else{
-                                        finish();
-                                        startActivity(new Intent(getApplicationContext(), login.class));
+                                        logout_fb();
+                                        //finish();
+                                        //startActivity(new Intent(getApplicationContext(), login.class));
+                                        Toast.makeText(getApplicationContext(), "veillez cochez la case svp ", Toast.LENGTH_LONG).show();
+
                                     }
 
 
@@ -380,7 +389,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
             }
             @Override
             public void onCancel() {
-                Toast.makeText(getApplicationContext(), "connection a facebook echoué verifier la connection internet ", Toast.LENGTH_LONG).show();
+            //    Toast.makeText(getApplicationContext(), "connection a facebook echoué verifier la connection internet ", Toast.LENGTH_LONG).show();
                loadingDialog.dismissDialog();
                 loadingDialog.startWarningDialog_log();
             //    setContentView(R.layout.activity_login);
@@ -388,7 +397,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(getApplicationContext(), "connection a facebook echoué verifier la connection internet ", Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(), "connection a facebook echoué verifier la connection internet ", Toast.LENGTH_LONG).show();
                loadingDialog.dismissDialog();
                 loadingDialog.startWarningDialog_log();
             //    setContentView(R.layout.activity_login);
@@ -406,8 +415,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 if(checkBox.isChecked()){
                     google();
                 }else{
-                    finish();
+                    //finish();
                     startActivity(new Intent(getApplicationContext(), login.class));
+                    Toast.makeText(getApplicationContext(), "veuillez  cochez la case svp ", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
@@ -418,6 +429,16 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
 
+    }
+
+
+
+    public void logout_fb() {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+            startActivity(new Intent(this, login.class));
+            // Toast.makeText(getApplicationContext(),"facebook deconnecter",Toast.LENGTH_LONG).show();
+        }
     }
 
     public void google(){
@@ -460,9 +481,17 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
            }
        }else{
             //Toast.makeText(getApplicationContext(), "facebook on result", Toast.LENGTH_LONG).show();
-            loadingDialog = new LoadingDialog(login.this);
-            loadingDialog.startLoadingDialog();
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+
+            if(checkBox.isChecked()){
+                loadingDialog = new LoadingDialog(login.this);
+                loadingDialog.startLoadingDialog();
+                callbackManager.onActivityResult(requestCode, resultCode, data);
+            }else{
+                //logout_fb();
+                startActivity(new Intent(getApplicationContext(), login.class));
+                Toast.makeText(getApplicationContext(), "veuillez cochez la case svp ", Toast.LENGTH_LONG).show();
+
+            }
         }
     }
     protected void handleSignInResult(GoogleSignInResult result){
@@ -478,13 +507,14 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
             Bundle bundle = new Bundle();
             bundle.putString("ggle",google);
             i.putExtras(bundle);
+
                 connection(login.this,userName,userEmail,google);
-                // Toast.makeText(getApplicationContext(),userName + userEmail ,Toast.LENGTH_LONG).show();
-
+               // Toast.makeText(getApplicationContext(),userName + userEmail ,Toast.LENGTH_LONG).show();
                 storeUserData(userName,userEmail);
-
                 startActivity(i, bundle);
                 finish();
+
+
 
 
 
@@ -496,7 +526,18 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
     }
 
-    public static void connection(final Context context, final String username, final String usermail, final String plateforme){
+    public void logout_gl() {
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(login.this, "reessayer ... ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public  boolean connection(final Context context, final String username, final String usermail, final String plateforme){
         RequestQueue queue = Volley.newRequestQueue(context);
         StringRequest sr = new StringRequest(Request.Method.POST,"https://digitalfinances.innovstech.com/visiteur.php", new Response.Listener<String>() {
 
@@ -509,6 +550,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context,"verifier la connection internet ",Toast.LENGTH_LONG).show();
+                loadingDialog.dismissDialog();
+                loadingDialog.startWarningDialog_log();
 
             }
         })
@@ -535,6 +578,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
      //   Toast.makeText(context,usermail,Toast.LENGTH_LONG).show();
 
         queue.add(sr);
+        return true;
     }
 
 

@@ -6,15 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="@dimen/cardview_default_elevation"
-    app:cardBackgroundColor="#FFFFFF"
+    app:cardBackgroundColor="#fff"
     android:layout_margin="5dp">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="true"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_launcher_background"/>
+        android:background="#fff"/>
 
 
     <!--<androidx.constraintlayout.widget.ConstraintLayout

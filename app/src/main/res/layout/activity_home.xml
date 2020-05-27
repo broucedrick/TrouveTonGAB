@@ -17,13 +17,17 @@ tools:context=".ItineActivity">
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="300dp"
+            android:layout_height="0dp"
             android:background="@drawable/login_back"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/imageV"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/imageSlider"
+            app:layout_constraintVertical_bias="0.0">
+
+
+        </View>
 
         <ImageView
             android:id="@+id/imageV"
@@ -33,39 +37,31 @@ tools:context=".ItineActivity">
             android:layout_marginLeft="120dp"
             android:layout_marginEnd="120dp"
             android:layout_marginRight="120dp"
-            android:layout_marginBottom="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/digitale_finances_logo" />
+            app:srcCompat="@drawable/digitale_finances_logo"/>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardslide"
+        <com.smarteist.autoimageslider.SliderView
+            android:id="@+id/imageSlider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-            <com.smarteist.autoimageslider.SliderView
-                android:id="@+id/imageSlider"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:sliderAnimationDuration="600"
-                app:sliderAutoCycleDirection="back_and_forth"
-                app:sliderAutoCycleEnabled="true"
-                app:sliderIndicatorAnimationDuration="600"
-                app:sliderIndicatorGravity="center_horizontal|bottom"
-                app:sliderIndicatorMargin="15dp"
-                app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorPadding="3dp"
-                app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="#5A5A5A"
-                app:sliderIndicatorUnselectedColor="#FFF"
-                app:sliderScrollTimeInSec="1"
-                app:sliderStartAutoCycle="true" />
-
-        </androidx.cardview.widget.CardView>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:sliderAnimationDuration="600"
+            app:sliderAutoCycleDirection="back_and_forth"
+            app:sliderAutoCycleEnabled="true"
+            app:sliderIndicatorAnimationDuration="600"
+            app:sliderIndicatorGravity="center_horizontal|bottom"
+            app:sliderIndicatorMargin="15dp"
+            app:sliderIndicatorOrientation="horizontal"
+            app:sliderIndicatorPadding="3dp"
+            app:sliderIndicatorRadius="2dp"
+            app:sliderIndicatorSelectedColor="#5A5A5A"
+            app:sliderIndicatorUnselectedColor="#FFF"
+            app:sliderScrollTimeInSec="1"
+            app:sliderStartAutoCycle="true" />
 
         <!--<ImageView
             android:id="@+id/imageView7"
@@ -77,60 +73,83 @@ tools:context=".ItineActivity">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />-->
 
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_margin="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/view2"
+            app:layout_constraintEnd_toEndOf="@+id/view2"
+            app:layout_constraintStart_toStartOf="@+id/view2"
             app:layout_constraintTop_toBottomOf="@+id/cardslide"
-            app:layout_constraintVertical_bias="0.04000002">
+            app:layout_constraintVertical_bias="0.53">-->
 
-            <Button
-                android:id="@+id/btn_ttg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_back"
-                android:maxLines="2"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="10dp"
-                android:text="Trouver un GAB"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_incident"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <!--</LinearLayout>-->
 
-            <Button
-                android:id="@+id/btn_incident"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_back"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="10dp"
-                android:text="Déclarer un incident"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btn_ttg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/btn_back"
+            android:maxLines="2"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="20dp"
+            android:text="Trouver un GAB"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/view2"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/view2"
+            app:layout_constraintTop_toBottomOf="@+id/imageSlider" />
 
-            <Button
-                android:id="@+id/btn_df"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_back"
-                android:paddingVertical="10dp"
-                android:text="Marketplace Digitale Finances"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_incident"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/btn_back"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="20dp"
+            android:text="Déclarer un incident"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/view2"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/view2"
+            app:layout_constraintTop_toBottomOf="@+id/btn_ttg" />
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_df"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/btn_back"
+            android:paddingVertical="20dp"
+            android:text="Digitale Finances"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/view2"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/view2"
+            app:layout_constraintTop_toBottomOf="@+id/btn_incident" />
 
         <include
             android:id="@+id/toolbar"
@@ -154,15 +173,22 @@ tools:context=".ItineActivity">
         app:itemTextColor="#fff"
         app:itemIconTint="#fff">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version : 1.0.0\nPropriété de Digitale Finances,\nTous droits reservés"
+            android:fontFamily="@font/ubuntu_l"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="70dp"
+            android:textColor="#fff" />
+
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginRight="100dp"
-            android:layout_marginBottom="0dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="150dp"
+            android:layout_marginLeft="20dp"
             android:layout_gravity="bottom"
             app:srcCompat="@drawable/digitale_finances_logo" />
 

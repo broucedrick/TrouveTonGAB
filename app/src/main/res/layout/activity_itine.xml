@@ -58,15 +58,22 @@
         app:itemTextColor="#fff"
         app:itemIconTint="#fff">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version : 1.0.0\nPropriété de Digitale Finances,\nTous droits reservés"
+            android:fontFamily="@font/ubuntu_l"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="70dp"
+            android:textColor="#fff" />
+
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginRight="100dp"
-            android:layout_marginBottom="0dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="150dp"
+            android:layout_marginLeft="20dp"
             android:layout_gravity="bottom"
             app:srcCompat="@drawable/digitale_finances_logo" />
 

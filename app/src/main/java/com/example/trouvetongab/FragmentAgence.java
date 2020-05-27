@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.graphics.BitmapFactory;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import androidx.fragment.app.FragmentManager;
@@ -60,7 +62,7 @@ import java.util.Map;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
+public class FragmentAgence extends Fragment implements  OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private static final int MY_PERMISSIONS_LOCATION = 1;
     private GoogleMap mMap;
@@ -78,6 +80,7 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
 
 
     int bankid;
+    int bank_id;
 
     public FragmentAgence(int id, Context context){
         this.bankid = id;
@@ -293,19 +296,21 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
-
-        mMap.animateCamera(CameraUpdateFactory.zoomTo((float) 5.909));
+        mMap.setMyLocationEnabled(true);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo((float) 5.5));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setOnInfoWindowClickListener(this);
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        alert.setView(R.layout.loading_dialog);
+        //alert.setView(R.layout.loading_dialog);
+        alert.setMessage("Chargement...");
         alert.setCancelable(false);
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
 
 
-         String URL_AGENCE = "http://digitalfinances.innovstech.com/getLatLng.php?id="+bankid;
+         String URL_AGENCE = "http://digitalfinances.innovstech.com/getAgenceLatLng.php?id="+bankid;
         //Toast.makeText(ListGab.this, URL_GAB, Toast.LENGTH_LONG).show();
         StringRequest SRequest = new StringRequest(Request.Method.GET, URL_AGENCE,
                 new Response.Listener<String>() {
@@ -320,6 +325,9 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                     final String title = b.getString("title");
                                     String lng = b.getString("longitude");
                                     String lat = b.getString("latitude");
+                                    String ville = b.getString("ville");
+                                    String horaire = b.getString("horaire");
+                                    String contact = b.getString("contact");
 
                                     Double Nlat = Double.parseDouble(lat);
                                     Double Nlng = Double.parseDouble(lng);
@@ -327,8 +335,11 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                     if (ContextCompat.checkSelfPermission(getActivity(),
                                             Manifest.permission.ACCESS_FINE_LOCATION)
                                             == PackageManager.PERMISSION_GRANTED) {
+                                        mMap.setMyLocationEnabled(true);
 
                                         LatLng cord = new LatLng(Nlat,Nlng);
+                                        CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(FragmentAgence.this, horaire.replace("\n",""), contact.replace("\n",""));
+                                        mMap.setInfoWindowAdapter(adapter);
                                         switch (bankid){
                                             case 1:
                                                 mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_boa_marker_foreground))));
@@ -409,18 +420,21 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                                 mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bsic_marker_foreground))));
                                                 break;
                                             default:
-                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker()));
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker())).showInfoWindow();
                                                 break;
                                         }
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
-                                        mMap.setMyLocationEnabled(true);
+
 
                                     }else if (ContextCompat.checkSelfPermission(getActivity(),
                                             Manifest.permission.ACCESS_COARSE_LOCATION)
                                             == PackageManager.PERMISSION_GRANTED){
 
 
-                                        LatLng cord = new LatLng(Nlat,Nlng);
+                                        mMap.setMyLocationEnabled(true);
+                                        LatLng cord = new LatLng(Nlat,Nlng);CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(FragmentAgence.this, horaire, contact);
+                                        mMap.setInfoWindowAdapter(adapter);
+
                                         switch (bankid){
                                             case 1:
                                                 mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_boa_marker_foreground))));
@@ -501,11 +515,11 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                                                 mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bsic_marker_foreground))));
                                                 break;
                                             default:
-                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker()));
+                                                mMap.addMarker(new MarkerOptions().position(cord).title(title).icon(BitmapDescriptorFactory.defaultMarker())).showInfoWindow();
                                                 break;
                                         }
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(cord));
-                                        mMap.setMyLocationEnabled(true);
+
                                     }else{
                                         Toast.makeText(getActivity(), "permission non occorder ", Toast.LENGTH_SHORT).show();
 
@@ -583,12 +597,28 @@ public class FragmentAgence extends Fragment implements  OnMapReadyCallback {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //Toast.makeText(ListGab.this, "Connection Error... "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
+                        alert.setMessage("Veuillez vérifier votre connexion internet et réessayer !");
+                        alert.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                                getActivity().finish();
+                            }
+                        });
+                       alert.setCancelable(false);
+                       alert.create().show();
                     }
                 });
 
         RequestQueue requestQueuess = Volley.newRequestQueue(getContext());
         requestQueuess.add(SRequest);
 
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        marker.showInfoWindow();
     }
 
     public static void connection(final Context context, final int id,final String title, final String lat, final String lng){

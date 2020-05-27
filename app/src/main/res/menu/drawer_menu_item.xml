@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/apropos"
-        android:icon="@drawable/ic_apropos"
         android:title="A propos"/>
 
     <item
         android:id="@+id/mention"
-        android:icon="@drawable/ic_ml"
         android:title="Mentions Légales"/>
 
     <item
         android:id="@+id/cgu"
-        android:icon="@drawable/ic_cgu"
-        android:title="Conditions d'utilisation (CGU)"/>
+        android:title="Conditions d'Utilisation (CGU)"/>
+
+    <item
+        android:id="@+id/df"
+        android:title="Digitale Finances"/>
 
     <item
         android:id="@+id/dnx"
-        android:icon="@drawable/ic_logout"
-        android:title="Deconnexion"/>
+        android:title="Se déconnecter"/>
 
 </menu>

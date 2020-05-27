@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.facebook.AccessToken;
@@ -55,22 +56,22 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
         String bank_name = bundle.getString("bank_name");
         drawerLayout = findViewById(R.id.drawer);
         toolbar = (Toolbar) findViewById(R.id.toolbar1);
-        drawerNavView = findViewById(R.id.drawerNavView);
+        //drawerNavView = findViewById(R.id.drawerNavView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toggle = new ActionBarDrawerToggle(AgenceGab.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        drawerNavView.setNavigationItemSelectedListener(AgenceGab.this);
+     // toggle = new ActionBarDrawerToggle(AgenceGab.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+     //   drawerLayout.addDrawerListener(toggle);
+     //   toggle.syncState();
+     //  drawerNavView.setNavigationItemSelectedListener(AgenceGab.this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
 
-        View headerView = drawerNavView.getHeaderView(0);
+        //View headerView = drawerNavView.getHeaderView(0);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -116,16 +117,32 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
         });
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     private void clearPrefData(){
         SharedPreferences mSharedPreferences = getSharedPreferences("User Data", Context.MODE_PRIVATE);
         SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-        mEditor.clear().apply();
+        mEditor.remove("nom");
+        mEditor.remove("email");
+        mEditor.apply();
     }
 
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+            case R.id.df:
+                String url = "https://www.digitalefinances.com";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                break;
             case R.id.apropos:
                 i_title = "A propos";
                 i_info = "Créée par la jeune Fintech Digitale Finances, TROUVE TON GAB est un service innovant, performant et intuitif qui vous permet d’informer les clients  (de toutes les banques ) de la disponibilité de leur GAB/DAB  en live en plus de leur géolocalisation, et ce , depuis votre smartphone ou tablette. \n" +
@@ -148,6 +165,14 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
                         "Pour tout savoir sur l’appli TROUVE TON GAB (TTG) , contactez-nous via le Call Center au +20003396 , le Chat Bot (site web et facebook messenger) ;whatsapp :50252526 ou par email : info@digitalefinances.com\n";
                 //Toast.makeText(this, "A propos", Toast.LENGTH_SHORT).show();
 
+                Intent a = new Intent(this, InfosActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("i_title", i_title);
+                bundle.putString("i_info", i_info);
+                a.putExtras(bundle);
+
+                startActivity(a, bundle);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
 
             case R.id.mention:
@@ -166,6 +191,14 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
                         "•\tRègles professionnelles\n" +
                         "TROUVE TON GAB est un service innovant, performant et intuitif qui vous permet d’informer les clients  (de toutes les banques ) de la disponibilité de leur GAB/DAB  en live en plus de leur géolocalisation, et ce , depuis votre smartphone ou tablette. \n" +
                         "TTG permet également la géolocalisation des agences bancaires de toutes les banques locales.\n";
+                Intent _i = new Intent(this, InfosActivity.class);
+                Bundle bundle_m = new Bundle();
+                bundle_m.putString("i_title", i_title);
+                bundle_m.putString("i_info", i_info);
+                _i.putExtras(bundle_m);
+
+                startActivity(_i, bundle_m);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             case R.id.cgu:
                 i_title = "Conditions Générales d'Utilisation\n(CGU)";
@@ -355,6 +388,15 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
                         "La Partie faisant état de l’existence dudit litige, devra dès qu’elle en a connaissance, le notifier à l’autre Partie par écrit en précisant sa nature et en fournissant toute autre information pertinente qu’elle jugera nécessaire à sa compréhension. \n" +
                         "\n" +
                         "A défaut d’accord dans un délai de trente (30) jours à compter de la date de réception, de la notification, le litige sera soumis par la partie la plus diligente, au Tribunal de Commerce d’Abidjan.\n";
+
+                Intent j = new Intent(this, InfosActivity.class);
+                Bundle bundle3 = new Bundle();
+                bundle3.putString("i_title", i_title);
+                bundle3.putString("i_info", i_info);
+                j.putExtras(bundle3);
+
+                startActivity(j, bundle3);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             case R.id.dnx:
                 Toast.makeText(this, "Deconnexion", Toast.LENGTH_SHORT).show();
@@ -364,14 +406,7 @@ public class AgenceGab extends AppCompatActivity implements NavigationView.OnNav
                 break;
         }
 
-        Intent i = new Intent(this, InfosActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("i_title", i_title);
-        bundle.putString("i_info", i_info);
-        i.putExtras(bundle);
 
-        startActivity(i, bundle);
-        drawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 }

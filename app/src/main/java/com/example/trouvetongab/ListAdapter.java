@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +45,7 @@ public class ListAdapter extends  RecyclerView.Adapter<ListAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        ImageView img;
+        ImageButton img;
         //TextView imgname;
         CardView parentLayout;
         public ViewHolder(View v) {
@@ -73,20 +74,7 @@ public class ListAdapter extends  RecyclerView.Adapter<ListAdapter.ViewHolder>{
 
         holder.img.setImageResource(getImageSrc(bk.getImage()));
 
-/*        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ctxt, ListGab.class);
-              //  Toast.makeText(ctxt, "go to route", Toast.LENGTH_LONG).show();
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("bank_id", bk.getId());
-                bundle.putString("bank_name", bk.getTitle());
-                i.putExtras(bundle);
-                ctxt.startActivity(i, bundle);
-            }
-        });*/
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+        holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Intent i = new Intent(ctxt, ListGab.class);

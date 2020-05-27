@@ -40,7 +40,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SlideAdapterV
 
         viewHolder.imageViewBackground.setBackground(sliderItem);
 
-        viewHolder.itemView.setOnTouchListener(new View.OnTouchListener() {
+/*        viewHolder.itemView.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -57,7 +57,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SlideAdapterV
                 }
                 return false;
             }
-        });
+        });*/
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

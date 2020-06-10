@@ -116,7 +116,7 @@ public class GabListAdapter extends RecyclerView.Adapter<GabListAdapter.ViewHold
 
                     for (Gab gab : dataset) {
 
-                        if (gab.getTitle().toLowerCase().contains(charString.trim()) || gab.getTitle().contains(charString.trim())) {
+                        if (gab.getCommune().toLowerCase().contains(charString.trim()) || gab.getCommune().contains(charString.trim())) {
 
                             filteredList.add(gab);
                         }

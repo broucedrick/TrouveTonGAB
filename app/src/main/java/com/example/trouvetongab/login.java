@@ -15,7 +15,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +38,10 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -55,8 +60,12 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import static com.facebook.AccessToken.getCurrentAccessToken;
 
 
 public class login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -327,30 +336,46 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 startActivity(i, bundle);
             }
         });
+        //FacebookSdk.sdkInitialize(this);
+       // LoginManager.getInstance().logInWithReadPermissions(login.this, Arrays.asList("public_profile","email"));
 
         button_connection_fb = findViewById(R.id.login_button);
 
+/*
+        button_connection_fb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDetails();
+            }
+        });*/
+
+       button_connection_fb.setReadPermissions(Arrays.asList("public_profile,email"));
+        callbackManager= CallbackManager.Factory.create();
         button_connection_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+           AccessToken accessToken;
+
             @Override
             public void onSuccess(LoginResult loginResult) {
-                //loadingDialog.dismissDialog();
-
-                GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject me, GraphResponse response) {
-                                if (response.getError() != null) {
-                                    // handle error
-                                } else {
+                new GraphRequest(
+                        loginResult.getAccessToken(),     "/me?fields=id,name,email",     null,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse response) {
+                                try {
+                                    Log.e("JSON",response.toString());
                                     if(checkBox.isChecked()){
+                                        Intent i = new Intent(login.this, Home.class);
 
-                                    JSONObject data = response.getJSONObject();
-                                    Intent i = new Intent(login.this, Home.class);
+                                        JSONObject data = response.getJSONObject();
+                                        //data.getString("id"),
+                                        //data.getString("name"),
+                                        //data.getString("email")
+                                        Toast.makeText(getApplicationContext(),data+"ok",Toast.LENGTH_LONG).show();
+                                        name = data.getString("name");
+                                        email = data.getString("email");
+                                        String id =data.getString("id");
+                                        Toast.makeText(getApplicationContext(),email,Toast.LENGTH_LONG).show();
 
-                                    name = me.optString("name");
-                                    String email = me.optString("email");
-                                    String id = me.optString("id");
-                                    //Toast.makeText(getApplicationContext(),name,Toast.LENGTH_LONG).show();
 
 
                                         Bundle bundle = new Bundle();
@@ -379,15 +404,15 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                                     }
 
-
-                      //  Toast.makeText(getApplicationContext(),data.toString(),Toast.LENGTH_LONG).show();
-
+                                } catch (Exception e){
+                                    e.printStackTrace();
                                 }
                             }
+                        }
+                ).executeAsync();
 
-                        }).executeAsync();
             }
-            @Override
+          @Override
             public void onCancel() {
             //    Toast.makeText(getApplicationContext(), "connection a facebook echoué verifier la connection internet ", Toast.LENGTH_LONG).show();
                loadingDialog.dismissDialog();
@@ -408,6 +433,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
         //////////////////connnection google/////////////////
         //button_connection_ggle = findViewById(R.id.sign_in_button);
+
+
+
         btngoogle = (CardView) findViewById(R.id.btngoogle);
         btngoogle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -431,10 +459,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
     }
 
-
-
-    public void logout_fb() {
-        if (AccessToken.getCurrentAccessToken() != null) {
+            public void logout_fb() {
+        if (getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
             startActivity(new Intent(this, login.class));
             // Toast.makeText(getApplicationContext(),"facebook deconnecter",Toast.LENGTH_LONG).show();

@@ -169,9 +169,10 @@ public class ListGab extends AppCompatActivity implements NavigationView.OnNavig
 
                                 String title = b.getString("title");
                                 String location = b.getString("location");
+                                String com = b.getString("commune");
                                 int posted = b.getInt("posted");
 
-                                gb.add(new Gab(title, location, posted));
+                                gb.add(new Gab(title, location, posted, com));
 
                             }
                             mAdapter = new ListGabAdapter(ListGab.this, gb);

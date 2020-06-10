@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,15 +101,17 @@ public class FragmentGab extends Fragment {
 
                                     String title = b.getString("title");
                                     String location = b.getString("location");
+                                    String commune = b.getString("commune");
                                     int posted = b.getInt("posted");
                                     // Toast.makeText(getActivity(), title, Toast.LENGTH_SHORT).show();
 
-                                    gabs.add(new Gab(title, location, posted));
+                                    gabs.add(new Gab(title, location, posted, commune));
 
                                 }
 
                                 mAdapter = new GabListAdapter(getContext(), gabs);
                                 recyclerView.setAdapter(mAdapter);
+
                             }
 
 
@@ -127,7 +131,23 @@ public class FragmentGab extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
 
+        searchBar = (EditText) v.findViewById(R.id.searchbar_gab);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         return v;
     }

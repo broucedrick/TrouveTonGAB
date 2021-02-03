@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +110,24 @@ public class FragmentGab extends Fragment {
 
                                 mAdapter = new GabListAdapter(getContext(), gabs);
                                 recyclerView.setAdapter(mAdapter);
+
+                                searchBar = (EditText) v.findViewById(R.id.custom_search);
+                                searchBar.addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                    }
+
+                                    @Override
+                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                        mAdapter.getFilter().filter(s);
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(Editable s) {
+
+                                    }
+                                });
                             }
 
 
